@@ -29,7 +29,7 @@ namespace Lab1
             }
 
 
-            foreach (KeyValuePair<Tuple<Neuron, Neuron>, double> i in previousLayer.PreviousWeights)
+            foreach (KeyValuePair<Tuple<Neuron, Neuron>, double> i in Layer.PreviousWeights)
             {
                 Console.WriteLine(i.Key + ": " + i.Value);
             }
