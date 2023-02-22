@@ -48,7 +48,7 @@ namespace Lab1
     {
         public double Calculate(double x)
         {
-            return 1 / (1 + Math.Exp(-x)) * 10;
+            return 10 / (1 + Math.Exp(-x));
         }
 
         public double CalculateDerivative(double x)

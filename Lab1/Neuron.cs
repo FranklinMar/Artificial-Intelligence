@@ -10,22 +10,21 @@ namespace Lab1
         //private IEnumerable<double>? InputWeights { get; set; }
         public double Value { get; private set; }
 
-        #nullable enable
-        public IDictionary<Neuron, double>? PreviousWeights { get; private set; } = null;
+        public IDictionary<Neuron, double> PreviousWeights { get; private set; } = null;
         private Layer PreviousLayer { get; set; }
         /*public double Output { 
             get { return Function.Calculate(Value); } 
             set { Value = value; } 
         }*/
 
-        public Neuron(double value/*, IFunction function, IEnumerable<double>? input = null*/)
+        public Neuron(double value = 0/*, IFunction function, IEnumerable<double>? input = null*/)
         {
             /*Function = function;*/
             //Output = value;
             Value = value;
             //InputWeights = input;
         }
-        public void RandomizeWeights(Layer previousLayer, double Const)
+        public void RandomizeWeights(Layer previousLayer, double? value = null, double? Const = null)
         {
             Random generator = new();
             PreviousWeights = new Dictionary<Neuron, double>();
@@ -36,7 +35,13 @@ namespace Lab1
                 // Maximum = Value + Const
                 // Minimum = Value - Const
                 // Maximum - Minimum = Value + Const - Value + Const = 2 * Const
-                PreviousWeights.Add(neuron, generator.NextDouble() * 2 * Const + Output - Const);
+                if (value != null && Const != null) { 
+                    PreviousWeights.Add(neuron, generator.NextDouble() * 2 * (double) Const + (double) value - (double) Const);
+                } 
+                else
+                {
+                    PreviousWeights.Add(neuron, generator.NextDouble());
+                }
                 /*PreviousWeights.Add(new Tuple<Neuron, Neuron>(thisNeuron, previousNeuron), generator.Next(Math.Floor(thisNeuron.Output) - Const, Math.Ceiling(thisNeuron.Output) + Const));*/
 
             }

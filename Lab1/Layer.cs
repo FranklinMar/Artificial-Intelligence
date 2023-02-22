@@ -8,7 +8,6 @@ namespace Lab1
 {
     class Layer
     {
-        private IFunction Function { get; set; }
         private int MetaConst = 5;
         public int Const
         {
@@ -35,9 +34,9 @@ namespace Lab1
                 MetaNeurons = value;
             }
         }
-        #nullable enable
-        private Layer? MetaPreviousLayer;
-        public Layer? PreviousLayer
+        
+        private Layer MetaPreviousLayer;
+        public Layer PreviousLayer
         {
             get { return MetaPreviousLayer; }
             set
@@ -57,10 +56,9 @@ namespace Lab1
             }
         }
 
-        public Layer(IList<Neuron> neurons, IFunction function, Layer? previous = null)
+        public Layer(IList<Neuron> neurons, Layer previous = null)
         {
             Neurons = neurons;
-            Function = function;
             PreviousLayer = previous;
         }
 
