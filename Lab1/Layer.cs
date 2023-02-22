@@ -28,7 +28,10 @@ namespace Lab1
             get { return MetaNeurons; }
             set 
             { 
-                PreviousWeights = null;
+                foreach(Neuron neuron in value)
+                {
+                    neuron.NullifyWeights();
+                }
                 MetaNeurons = value;
             }
         }
@@ -39,12 +42,20 @@ namespace Lab1
             get { return MetaPreviousLayer; }
             set
             {
-                PreviousWeights = null;
+                foreach (Neuron neuron in MetaNeurons)
+                {
+                    if (value != null)
+                    {
+                        neuron.RandomizeWeights(value, Const);
+                    } 
+                    else
+                    {
+                        neuron.NullifyWeights();
+                    }
+                }
                 MetaPreviousLayer = value;
             }
         }
-
-        public IDictionary<Tuple<Neuron, Neuron>, double>? PreviousWeights { get; private set; }
 
         public Layer(IList<Neuron> neurons, IFunction function, Layer? previous = null)
         {
@@ -53,29 +64,5 @@ namespace Lab1
             PreviousLayer = previous;
         }
 
-        public void RandomizeWeights()
-        {
-            if (PreviousLayer == null)
-            {
-                throw new InvalidOperationException("No previous layer found");
-            }
-            
-            Random generator = new ();
-            PreviousWeights = new Dictionary<Tuple<Neuron, Neuron>, double>();
-            foreach (Neuron thisNeuron in Neurons)
-            {
-                foreach (Neuron previousNeuron in PreviousLayer.Neurons)
-                {
-                    /*Double Const = 5;*/
-                    // random.NextDouble() * (Maximum - Minimum) + Minimum;
-                    // Maximum = Value + Const
-                    // Minimum = Value - Const
-                    // Maximum - Minimum = Value + Const - Value + Const = 2 * Const
-                    PreviousWeights.Add(new Tuple<Neuron, Neuron>(thisNeuron, previousNeuron), generator.NextDouble() * 2 * Const + thisNeuron.Output - Const);
-                    /*PreviousWeights.Add(new Tuple<Neuron, Neuron>(thisNeuron, previousNeuron), generator.Next(Math.Floor(thisNeuron.Output) - Const, Math.Ceiling(thisNeuron.Output) + Const));*/
-
-                }
-            }
-        } 
     }
 }

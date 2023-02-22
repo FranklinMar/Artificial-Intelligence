@@ -11,11 +11,11 @@ namespace Lab1
             List<Neuron> neurons = new () { new Neuron(0), new Neuron(0), new Neuron(0) };
             Layer first = new (neurons, function);
             Layer last = new (new List<Neuron>() { new Neuron(1) }, function, first);
-            last.RandomizeWeights();
 
-            foreach (KeyValuePair <Tuple<Neuron, Neuron>, double> i in last.PreviousWeights)
+            foreach (Neuron i in last.Neurons)
             {
-                Console.WriteLine(i.Key + ": " + i.Value);
+                foreach (KeyValuePair<Neuron, double> pair in i.PreviousWeights)
+                Console.WriteLine(pair.Key + ": " + pair.Value);
             }
             //Console.WriteLine("Hello World!");
         }
