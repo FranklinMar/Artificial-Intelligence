@@ -18,12 +18,24 @@ namespace Lab1
                 Console.WriteLine(pair.Key + ": " + pair.Value);
             }
             //Console.WriteLine("Hello World!");*/
-            List<Neuron> neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
-            Network network = new (Sigmoid.Instance, neurons, 1, 1);
+            /*List<Neuron> neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
+            Neuron result = new ();
+            Network network = new (Sigmoid.Instance, neurons, result, 1, 1);
             network.Debug = true;
-            network.Propagate(0.1);
+            network.Propagate(0.1, 1);*/
+            LinkedList<IList<Neuron>> list = new();
 
-
+            // And Network
+            List<Neuron> neurons = new() { new Neuron(1), new Neuron(1) };
+            List<double> weights = new() { 1, 1 };
+            Neuron output = new();
+            output.SetWeights(neurons, weights);
+            list.AddLast(neurons);
+            list.AddLast(new List<Neuron>() { output });
+            Network neural = new Network(And.Instance, list, output);
+            neural.Debug = true;
+            Console.WriteLine($"X1: {neurons[0].Value}\nX@: {neurons[1].Value}");
+            Console.WriteLine($"\n\nFinal Result {neural.Calculate()}");
         }
     }
 }

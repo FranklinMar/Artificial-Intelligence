@@ -48,12 +48,27 @@ namespace Lab1
             }
             PreviousLayer = previousLayer;
         }
+
+        public void SetWeights(IList<Neuron> previousLayer, IList<double> weights)
+        {
+            if (previousLayer.Count != weights.Count)
+            {
+                throw new InvalidOperationException("Number of neurons and weights do not match");
+            }
+            PreviousWeights = new Dictionary<Neuron, double>();
+            for (int i = 0; i < previousLayer.Count; i++)
+            {
+                PreviousWeights.Add(previousLayer[i], weights[i]);
+            }
+            PreviousLayer = previousLayer;
+        }
         public void NullifyWeights()
         {
             PreviousWeights = null;
+            PreviousLayer = null;
         }
 
-        public double WeightSum(IFunction Function = null/*Layer Layer*/)
+        public double WeightSum(IFunction Function/*Layer Layer*/)
         {
             if (PreviousLayer == null)
             {
@@ -67,7 +82,7 @@ namespace Lab1
             Value = 0;
             foreach (KeyValuePair<Neuron, double> pair in PreviousWeights)
             {
-                Value += Function == null ? pair.Key.Value : Function.Calculate(pair.Key.Value) * pair.Value;
+                Value += (Function == null ? pair.Key.Value : Function.Calculate(pair.Key.Value)) * pair.Value;
             }
             //Output = sum;
             return Value;
