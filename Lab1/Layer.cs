@@ -8,7 +8,7 @@ namespace Lab1
 {
     class Layer
     {
-        private int MetaConst = 5;
+        /*private int MetaConst = 5;
         public int Const
         {
             get { return MetaConst; }
@@ -60,7 +60,7 @@ namespace Lab1
         {
             Neurons = neurons;
             PreviousLayer = previous;
-        }
+        }*/
 
     }
 }

@@ -11,7 +11,8 @@ namespace Lab1
         public double Value { get; private set; }
 
         public IDictionary<Neuron, double> PreviousWeights { get; private set; } = null;
-        private Layer PreviousLayer { get; set; }
+        //private Layer PreviousLayer { get; set; }
+        private IList<Neuron> PreviousLayer { get; set; }
         /*public double Output { 
             get { return Function.Calculate(Value); } 
             set { Value = value; } 
@@ -24,11 +25,11 @@ namespace Lab1
             Value = value;
             //InputWeights = input;
         }
-        public void RandomizeWeights(Layer previousLayer, double? value = null, double? Const = null)
+        public void RandomizeWeights(IList<Neuron> previousLayer, double? value = null, double? Const = null)
         {
             Random generator = new();
             PreviousWeights = new Dictionary<Neuron, double>();
-            foreach (Neuron neuron in previousLayer.Neurons)
+            foreach (Neuron neuron in previousLayer)
             {
                 /*Double Const = 5;*/
                 // random.NextDouble() * (Maximum - Minimum) + Minimum;
