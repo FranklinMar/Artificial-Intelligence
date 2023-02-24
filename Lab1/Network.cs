@@ -13,7 +13,7 @@ namespace Lab1
         private LinkedList<IList<Neuron>> Layers { get; set; }
         public Neuron Output { get; private set; }
         public IList<Neuron> Input { get; private set; }
-        private int MetaConst = 5;
+        private int MetaConst = 3;
         public int Const
         {
             get { return MetaConst; }
@@ -80,6 +80,7 @@ namespace Lab1
             {
                 throw new InvalidOperationException("Number of neurons in a layer must be bigger than zero");
             }
+            Layers = network;
             Function = function;
             Input = network.First.Value;
             Result = result;
@@ -120,7 +121,7 @@ namespace Lab1
                         Neuron neuron = Temp.Value[j];
                         // Y = F(S)
                         // S = Σ (Wi * xi)
-                        neuron.WeightSum(Function);
+                        neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
                         if (Debug)
                         {
                             Console.WriteLine($"Y#{i}#{j} = {neuron.Value}");
@@ -131,15 +132,17 @@ namespace Lab1
                 if (/*Function.Calculate(Output.WeightSum(Function))*/Function.Calculate(Output.Value) != Result)
                 {
                     // Δ = y - Y
-                    GlobalError = Result - Function.Calculate(Output.Value);
+                    GlobalError = Function.Calculate(Output.Value) - Result;
                     if (Debug)
-                    { 
+                    {
+                        Console.WriteLine($"\nExpected Result: {Result}");
                         Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}");
                         Console.WriteLine($"Global Error: {GlobalError}\n");
                     }
                     Temp = Layers.First.Next;
                     double delta_i;
                     double delta_Wi;
+                    double delta_average = 0;
                     //Console.WriteLine(Temp);
                     do
                     {
@@ -148,11 +151,11 @@ namespace Lab1
                             foreach (KeyValuePair<Neuron, double> pair in neuron.PreviousWeights)
                             {
                                 // Δi = Δ * w * F'(S)
-                                delta_i = GlobalError * pair.Value * Function.CalculateDerivative(pair.Key.Value);
-                                // ΔWi = Δi * E
-                                delta_Wi = delta_i * LearningSpeed;
+                                delta_i = GlobalError * pair.Key.Value * Function.CalculateDerivative(pair.Key.Value);
+                                // ΔWi = - Δi * E
+                                delta_Wi = - delta_i * LearningSpeed;
                                 // New Wi = Wi - ΔWi
-                                neuron.PreviousWeights[pair.Key] = pair.Value - delta_Wi;
+                                delta_average += delta_Wi / Input.Count;
                             }
                         }
 
@@ -165,6 +168,19 @@ namespace Lab1
                             // New Wi = Wi - ΔWi
                             Output.PreviousWeights[pair.Key] = pair.Value - delta_Wi;
                         }*/
+                    } while ((Temp = Temp.Next) != null);
+
+                    Temp = Layers.First.Next;
+                    do
+                    {
+                        foreach (Neuron neuron in Temp.Value)
+                        {
+                            foreach (KeyValuePair<Neuron, double> pair in neuron.PreviousWeights)
+                            {
+                                neuron.PreviousWeights[pair.Key] = pair.Value + delta_average;
+                            }
+                        }
+                        
                     } while ((Temp = Temp.Next) != null);
                 }
             }

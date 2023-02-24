@@ -19,9 +19,11 @@ namespace Lab1
             }
             //Console.WriteLine("Hello World!");*/
             List<Neuron> neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
-            Network network = new (Sigmoid.Instance, neurons, 2, 1);
+            Network network = new (Sigmoid.Instance, neurons, 1, 1);
             network.Debug = true;
             network.Propagate(0.1);
+
+
         }
     }
 }

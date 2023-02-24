@@ -37,11 +37,11 @@ namespace Lab1
                 // Minimum = Value - Const
                 // Maximum - Minimum = Value + Const - Value + Const = 2 * Const
                 if (value != null && Const != null) { 
-                    PreviousWeights.Add(neuron, generator.NextDouble() * 2 * (double) Const + (double) value - (double) Const);
+                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble() * 2 * (double) Const + (double) value - (double) Const));
                 } 
                 else
                 {
-                    PreviousWeights.Add(neuron, generator.NextDouble());
+                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble()));
                 }
                 /*PreviousWeights.Add(new Tuple<Neuron, Neuron>(thisNeuron, previousNeuron), generator.Next(Math.Floor(thisNeuron.Output) - Const, Math.Ceiling(thisNeuron.Output) + Const));*/
 
@@ -53,7 +53,7 @@ namespace Lab1
             PreviousWeights = null;
         }
 
-        public double WeightSum(IFunction Function/*Layer Layer*/)
+        public double WeightSum(IFunction Function = null/*Layer Layer*/)
         {
             if (PreviousLayer == null)
             {
@@ -67,7 +67,7 @@ namespace Lab1
             Value = 0;
             foreach (KeyValuePair<Neuron, double> pair in PreviousWeights)
             {
-                Value += Function.Calculate(pair.Key.Value) * pair.Value;
+                Value += Function == null ? pair.Key.Value : Function.Calculate(pair.Key.Value) * pair.Value;
             }
             //Output = sum;
             return Value;

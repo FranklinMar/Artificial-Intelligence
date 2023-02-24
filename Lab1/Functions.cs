@@ -48,12 +48,92 @@ namespace Lab1
     {
         public double Calculate(double x)
         {
-            return 10 / (1 + Math.Exp(-x));
+            return 10.0 / (1 + Math.Exp(-x));
         }
 
         public double CalculateDerivative(double x)
         {
             return Math.Exp(x) / Math.Pow((Math.Exp(x) + 1), 2);
+        }
+    }
+    
+    class And : Singleton<And>, IFunction
+    {
+        public double Calculate(double x)
+        {
+            if (x < 1.5)
+            {
+                return 0;
+            } 
+            else
+            {
+                return 1;
+            }
+        }
+
+        public double CalculateDerivative(double x)
+        {
+            return 0;
+        }
+    }
+
+    class Or : Singleton<Or>, IFunction
+    {
+        public double Calculate(double x)
+        {
+            if (x < 0.5)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        public double CalculateDerivative(double x)
+        {
+            return 0;
+        }
+    }
+
+    class Not : Singleton<Not>, IFunction
+    {
+        public double Calculate(double x)
+        {
+            if (x < -1)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        public double CalculateDerivative(double x)
+        {
+            return 0;
+        }
+    }
+
+    class Xor : Singleton<Xor>, IFunction
+    {
+        public double Calculate(double x)
+        {
+            if (x < 0.5)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        public double CalculateDerivative(double x)
+        {
+            return 0;
         }
     }
 }
