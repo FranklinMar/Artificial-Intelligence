@@ -108,7 +108,7 @@ namespace Lab1
                     neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
                     if (Debug)
                     {
-                        Console.WriteLine($"Y#{i}#{j} = {neuron.Value}");
+                        Console.WriteLine($"\tY#{i}#{j} = {neuron.Value}");
                     }
                 }
                 i++;
@@ -136,7 +136,6 @@ namespace Lab1
             while (Function.Calculate(Output.Value) != Result)
             {
                 Temp = Layers.First.Next;
-                //Console.WriteLine(Temp);
                 int i = 0;
                 
                 do
@@ -153,7 +152,7 @@ namespace Lab1
                         neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
                         if (Debug)
                         {
-                            Console.WriteLine($"Y#{i}#{j} = {neuron.Value}");
+                            Console.WriteLine($"\tY#{i}#{j} = {neuron.Value}");
                         }
                     }
                     i++;
@@ -165,8 +164,8 @@ namespace Lab1
                     if (Debug)
                     {
                         Console.WriteLine($"\nExpected Result: {Result}");
-                        Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}");
-                        Console.WriteLine($"Global Error: {GlobalError}\n");
+                        Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}\n");
+                        Console.WriteLine($"Global Error: {GlobalError}\n\n");
                     }
                     Temp = Layers.First.Next;
                     double delta_i;
@@ -181,22 +180,22 @@ namespace Lab1
                             {
                                 // Δi = Δ * w * F'(S)
                                 delta_i = GlobalError * pair.Key.Value * Function.CalculateDerivative(pair.Key.Value);
-                                // ΔWi = - Δi * E
-                                delta_Wi = - delta_i * LearningSpeed;
+                                // ΔWi = Δi * T
+                                delta_Wi = delta_i * LearningSpeed;
                                 // New Wi = Wi - ΔWi
                                 delta_average += delta_Wi / Input.Count;
                             }
                         }
 
-                        *foreach (KeyValuePair<Neuron, double> pair in Output.PreviousWeights)
-                        {
-                            // Δi = Δ * w * F'(S)
-                            delta_i = GlobalError * pair.Value * Function.CalculateDerivative(pair.Key.Value);
-                            // ΔWi = Δi * E
-                            delta_Wi = delta_i * LearningSpeed;
-                            // New Wi = Wi - ΔWi
-                            Output.PreviousWeights[pair.Key] = pair.Value - delta_Wi;
-                        }*
+                        //foreach (KeyValuePair<Neuron, double> pair in Output.PreviousWeights)
+                        //{
+                        //    // Δi = Δ * w * F'(S)
+                        //    delta_i = GlobalError * pair.Value * Function.CalculateDerivative(pair.Key.Value);
+                        //    // ΔWi = Δi * E
+                        //    delta_Wi = delta_i * LearningSpeed;
+                        //    // New Wi = Wi - ΔWi
+                        //    Output.PreviousWeights[pair.Key] = pair.Value - delta_Wi;
+                        //}
                     } while ((Temp = Temp.Next) != null);
 
                     Temp = Layers.First.Next;*/
@@ -208,11 +207,10 @@ namespace Lab1
                             {
                                 // Δi = Δ * w * F'(S)
                                 delta_i = GlobalError * pair.Value * Function.CalculateDerivative(pair.Key.Value);
-                                // ΔWi = Δi * E
+                                // ΔWi = Δi * T
                                 delta_Wi = delta_i * LearningSpeed;
                                 // New Wi = Wi - ΔWi
-                                //delta_average += delta_Wi / Input.Count;
-                                neuron.PreviousWeights[pair.Key] = pair.Value - delta_Wi;
+                                neuron.PreviousWeights[pair.Key] = pair.Value - delta_Wi;//delta_average;
                             }
                         }
                         
