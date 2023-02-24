@@ -8,12 +8,11 @@ namespace Lab1
 {
     class Network
     {
-        private IFunction Function { get; set; }
-        //private LinkedList<Layer> Layers { get; set; }
+        //prizate LinkedList<Layer> Layers { get; set; }
         private LinkedList<IList<Neuron>> Layers { get; set; }
         public Neuron Output { get; private set; }
         public IList<Neuron> Input { get; private set; }
-        private int MetaConst = 3;
+        private int MetaConst;
         public int Const
         {
             get { return MetaConst; }
@@ -27,11 +26,12 @@ namespace Lab1
             }
         }
         public double GlobalError { get; private set; }
-        public double Result;
+        // public double Result;
         public bool Debug = false;
-        //public Layer Input;
+        public IFunction Function { get; set; }
+        // public Layer Input;
 
-        public Network(IFunction function, IList<Neuron> input, Neuron output/*, double result*/, int LayersNum, int constant = 5/*, int neurons = 1*/)
+        public Network(IFunction function, IList<Neuron> input, Neuron output, double Result, int LayersNum, int constant = 1/*, int neurons = 1*/)
         {
             if (LayersNum < 1 /*|| neurons < 1 || input.Count < 1*/)
             {
@@ -70,7 +70,7 @@ namespace Lab1
             Output.RandomizeWeights(Layers.Last.Value, Result, Const);
             Layers.AddLast(new List<Neuron>() { Output });
         }
-        public Network(IFunction function, LinkedList<IList<Neuron>> network, Neuron output/*, double result*/)
+        public Network(IFunction function, LinkedList<IList<Neuron>> network, Neuron output, int constant = 1/*, double result*/)
         {
             if (network.Count < 1)
             {
@@ -85,6 +85,7 @@ namespace Lab1
             Input = network.First.Value;
             //Result = result;
             Output = output;
+            Const = constant;
         }
 
         public double Calculate()
