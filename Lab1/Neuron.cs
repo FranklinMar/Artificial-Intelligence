@@ -37,11 +37,11 @@ namespace Lab1
                 // Minimum = Value - Const
                 // Maximum - Minimum = Value + Const - Value + Const = 2 * Const
                 if (value != null && Const != null) { 
-                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble() * 2 * (double) Const + (double) value - (double) Const));
+                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble() * 2 * (double) Const + (double) value - (double) Const, 1));
                 } 
                 else
                 {
-                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble()));
+                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble(), 1));
                 }
                 /*PreviousWeights.Add(new Tuple<Neuron, Neuron>(thisNeuron, previousNeuron), generator.Next(Math.Floor(thisNeuron.Output) - Const, Math.Ceiling(thisNeuron.Output) + Const));*/
 
