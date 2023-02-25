@@ -53,7 +53,7 @@ namespace Lab1
             Layers.AddFirst(input);
             Neuron Temp;
             List<Neuron> list;
-            for (int i = 1; i < LayersNum; i++)
+            for (int i = 0; i < LayersNum; i++)
             {
                 list = new List<Neuron> (input.Count);
                 for (int j = 0; j < list.Count; j++)
@@ -141,8 +141,13 @@ namespace Lab1
             }
 
             LinkedListNode<List<Neuron>> Temp;
+            int counter = 0;
             while (Function.Calculate(Output.Value) != Result)
             {
+                if (Debug)
+                {
+                    Console.WriteLine($"Epoch #{counter}");
+                }
                 Calculate();
                 /*Temp = Layers.First.Next;
                 int i = 0;                
@@ -239,7 +244,7 @@ namespace Lab1
                                     Console.WriteLine($"\tDELTA W#{j}#{k} = {delta_Wj}");
                                 }
 
-                                neuron.PreviousWeights[connection.Key] -= delta_Wj;
+                                neuron.PreviousWeights[connection.Key] += delta_Wj;
 
                                 if (Debug)
                                 {
@@ -257,7 +262,11 @@ namespace Lab1
                     Console.WriteLine($"Expected Result: {Result}");
                     Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}\n");
                 }
-
+                counter++;
+                if (counter > 3000)
+                {
+                    throw new Exception("No Solution Found!");
+                }
             }
             if (Debug)
             {
