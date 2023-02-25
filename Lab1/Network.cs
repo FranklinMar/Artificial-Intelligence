@@ -56,7 +56,7 @@ namespace Lab1
             for (int i = 0; i < LayersNum; i++)
             {
                 list = new List<Neuron> (input.Count);
-                for (int j = 0; j < list.Count; j++)
+                for (int j = 0; j < input.Count; j++)
                 {
                     Temp = new Neuron();
                     list.Add(Temp);
@@ -141,7 +141,7 @@ namespace Lab1
             }
 
             LinkedListNode<List<Neuron>> Temp;
-            int counter = 0;
+            long counter = 0;
             while (Function.Calculate(Output.Value) != Result)
             {
                 if (Debug)
@@ -263,7 +263,7 @@ namespace Lab1
                     Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}\n");
                 }
                 counter++;
-                if (counter > 3000)
+                if (counter > 1E+10)
                 {
                     throw new Exception("No Solution Found!");
                 }
