@@ -23,7 +23,7 @@ namespace Lab1
             Network network = new (Sigmoid.Instance, neurons, result, 1, 1);
             network.Debug = true;
             network.Propagate(0.1, 1);*/
-            LinkedList<IList<Neuron>> list = new();
+            LinkedList<List<Neuron>> list = new();
 
             // And Network
             List<Neuron> neurons = new() { new Neuron(1), new Neuron(1) };

@@ -10,9 +10,11 @@ namespace Lab1
         //private IEnumerable<double>? InputWeights { get; set; }
         public double Value { get; private set; }
 
+        public double Delta { get; set; }
+
         public IDictionary<Neuron, double> PreviousWeights { get; private set; } = null;
         //private Layer PreviousLayer { get; set; }
-        private IList<Neuron> PreviousLayer { get; set; }
+        private List<Neuron> PreviousLayer { get; set; }
         /*public double Output { 
             get { return Function.Calculate(Value); } 
             set { Value = value; } 
@@ -25,7 +27,7 @@ namespace Lab1
             Value = value;
             //InputWeights = input;
         }
-        public void RandomizeWeights(IList<Neuron> previousLayer, double? value = null, double? Const = null)
+        public void RandomizeWeights(List<Neuron> previousLayer, double? value = null, double? Const = null)
         {
             Random generator = new();
             PreviousWeights = new Dictionary<Neuron, double>();
@@ -49,7 +51,7 @@ namespace Lab1
             PreviousLayer = previousLayer;
         }
 
-        public void SetWeights(IList<Neuron> previousLayer, IList<double> weights)
+        public void SetWeights(List<Neuron> previousLayer, IList<double> weights)
         {
             if (previousLayer.Count != weights.Count)
             {
