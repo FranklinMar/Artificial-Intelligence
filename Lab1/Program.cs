@@ -71,7 +71,8 @@ namespace Lab1
             Neuron result = new();
             Network network = new(Sigmoid.Instance, neurons, result, 1, 1);
             network.Debug = true;
-            network.Propagate(0.8, 1);
+            network.Propagate(1, 1);
+            Console.ReadKey();
         }
     }
 }

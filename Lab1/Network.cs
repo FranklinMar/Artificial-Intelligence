@@ -263,10 +263,10 @@ namespace Lab1
                     Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}\n");
                 }
                 counter++;
-                if (counter > 1E+10)
+                /*if (counter > 1E+10)
                 {
                     throw new Exception("No Solution Found!");
-                }
+                }*/
             }
             if (Debug)
             {
