@@ -6,18 +6,6 @@ using System.Threading.Tasks;
 
 namespace Lab1
 {
-    /*public abstract class Singleton<T> where T : class, new()
-    {
-        private static T _instance;
-
-        public static T GetInstance()
-        {
-            if (_instance == null)
-                _instance = new T();
-            return _instance;
-        }
-    }*/
-
     public abstract class Singleton<T> where T : class, new()
     {
         private static readonly T instance = new ();

@@ -8,10 +8,24 @@ namespace Lab1
 {
     class Network
     {
-        //prizate LinkedList<Layer> Layers { get; set; }
         private LinkedList<List<Neuron>> Layers { get; set; }
         public Neuron Output { get; private set; }
         public List<Neuron> Input { get; private set; }
+
+        private double MetaEpsilon;
+        public double Epsilon
+        {
+            get { return MetaEpsilon; } 
+            set
+            {
+                if (Epsilon < 0)
+                {
+                    throw new InvalidOperationException("Positive or zero values only");
+                }
+                MetaEpsilon = value;
+            }
+        }
+
         private int MetaConst;
         public int Const
         {
@@ -26,14 +40,12 @@ namespace Lab1
             }
         }
         public double GlobalError { get; private set; }
-        // public double Result;
         public bool Debug = false;
         public IFunction Function { get; set; }
-        // public Layer Input;
 
-        public Network(IFunction function, List<Neuron> input, Neuron output, double Result, int LayersNum, int constant = 1/*, int neurons = 1*/)
+        public Network(IFunction function, List<Neuron> input, Neuron output, double Result, int LayersNum, int constant = 1)
         {
-            if (LayersNum < 1 /*|| neurons < 1 || input.Count < 1*/)
+            if (LayersNum < 1)
             {
                 throw new InvalidOperationException("Number of networks elements (layers or neurons) must be bigger than zero");
             }
@@ -44,29 +56,22 @@ namespace Lab1
 
             Function = function;
             Input = input;
-            Const = constant;
-            //Result = result;
-            //Layer Input = new (input);
-            //Layer layer = Input;
-            //Layers = new LinkedList<Layer>();
             Layers = new LinkedList<List<Neuron>>();
             Layers.AddFirst(input);
             Neuron Temp;
             List<Neuron> list;
             for (int i = 0; i < LayersNum; i++)
             {
-                list = new List<Neuron> (input.Count);
+                list = new List<Neuron> ();
                 for (int j = 0; j < input.Count; j++)
                 {
                     Temp = new Neuron();
                     list.Add(Temp);
-                    Temp.RandomizeWeights(input, Temp.Value, Const);
+                    Temp.RandomizeWeights(Layers.Last.Value, Temp.Value, Const);
                 }
                 Layers.AddLast(list);
-                input = list;
-                //layer = new(list, layer);
             }
-            Output = output;//new();
+            Output = output;
             Output.RandomizeWeights(Layers.Last.Value, Result, Const);
             Layers.AddLast(new List<Neuron>() { Output });
         }
@@ -83,7 +88,6 @@ namespace Lab1
             Layers = network;
             Function = function;
             Input = network.First.Value;
-            //Result = result;
             Output = output;
             Const = constant;
         }
@@ -91,7 +95,6 @@ namespace Lab1
         public double Calculate()
         {
             LinkedListNode<List<Neuron>> Temp = Layers.First.Next;
-            //Console.WriteLine(Temp);
             if (Debug)
             {
                 Console.WriteLine("\nInput values:");
@@ -110,8 +113,8 @@ namespace Lab1
                 for (int j = 0; j < Temp.Value.Count; j++)
                 {
                     Neuron neuron = Temp.Value[j];
-                    // Y = F(S)
                     // S = Σ (Wi * xi)
+                    // Y = F(S)
                     neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
                     if (Debug)
                     {
@@ -142,49 +145,86 @@ namespace Lab1
 
             LinkedListNode<List<Neuron>> Temp;
             long counter = 0;
-            while (Function.Calculate(Output.Value) != Result)
+            while (Result - Function.Calculate(Output.Value) > Epsilon)
             {
                 if (Debug)
                 {
                     Console.WriteLine($"Epoch #{counter}");
                 }
+                
                 Calculate();
-                /*Temp = Layers.First.Next;
-                int i = 0;                
-                do
-                {
-                    if (Debug)
-                    {
-                        Console.WriteLine($"Layer #{i}");
-                    }
-                    for (int j = 0; j < Temp.Value.Count; j++)
-                    {
-                        Neuron neuron = Temp.Value[j];
-                        // Y = F(S)
-                        // S = Σ (Wi * xi)
-                        neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
-                        if (Debug)
-                        {
-                            Console.WriteLine($"\tS#{i}#{j} = {neuron.Value}");
-                            Console.WriteLine($"\tY#{i}#{j} = {Function.Calculate(neuron.Value)}");
-                        }
-                    }
-                    i++;
-                } while ((Temp = Temp.Next) != null);*/
+                
                 double ActualResult = Function.Calculate(Output.Value);
                 GlobalError = Result - ActualResult;
-                //double error1 = -x1 * 2 * Error;
-                //Temp = Layers.Last.Previous;
-                if (GlobalError != 0)
+                if (GlobalError > Epsilon)
                 {
-                    Temp = Layers.Last;
+                    // Option 1
+                    Temp = Layers.First.Next;
+                    int i = 0;
+                    double delta_j, delta_Wj, average_W = 0;
+                    do
+                    {
+                        if (Debug)
+                        {
+                            Console.WriteLine($"\nLayer #{i}");
+                        }
+                        for (int j = 0; j < Temp.Value.Count; j++)
+                        {
+                            Neuron neuron = Temp.Value[j];
+
+                            if (Debug)
+                            {
+                                Console.WriteLine($"\tS#{j} = {neuron.Value}");
+                                Console.WriteLine($"\tY#{j} = {Function.Calculate(neuron.Value)}");
+                            }
+                            for (int k = 0; k < neuron.PreviousWeights.Count; k++)
+                            {
+                                KeyValuePair<Neuron, double> connection = neuron.PreviousWeights.ToList()[k];
+                                // If previous layer is the first - use X and not S
+                                double value = (Temp == Layers.First.Next ? connection.Key.Value : Function.Calculate(connection.Key.Value));
+
+                                // Δ#i#j = Error * F'(S#j) * Y#i
+
+                                // #i - previous node
+                                // #j - next node
+                                delta_j = GlobalError * Function.CalculateDerivative(neuron.Value) * value;
+                                // ΔW#i#j = T * Δ#i#j
+                                delta_Wj = LearningSpeed * delta_j;
+                                if (Debug)
+                                {
+                                    Console.WriteLine($"\tW#{j}#{k} = {connection.Value}");
+                                    Console.WriteLine($"\tDELTA W#{j}#{k} = {delta_Wj}");
+                                }
+                                // AVERAGE ΔW = Σ#i (ΔW#i#j) => j = (0; N)
+                                average_W += delta_Wj / neuron.PreviousWeights.Count;
+                            }
+                            if (Debug)
+                            {
+                                Console.WriteLine($"AVERAGE DELTA W = {average_W}");
+                            }
+                            for (int k = 0; k < neuron.PreviousWeights.Count; k++)
+                            {
+                                KeyValuePair<Neuron, double> connection = neuron.PreviousWeights.ToList()[k];
+                                // W = W + AVERAGE ΔW
+                                neuron.PreviousWeights[connection.Key] += average_W;
+                                if (Debug)
+                                {
+                                    Console.WriteLine($"\tNEW W#{j}#{k} = {neuron.PreviousWeights[connection.Key]}\n");
+                                }
+                            }
+                        }
+                        i++;
+                    } while ((Temp = Temp.Next) != null);
+                    
+                    // Option 2
+                    /*Temp = Layers.Last;
                     double delta_j;
                     int i = Layers.Count - 1;
                     do
                     {
                         if (Debug)
                         {
-                            Console.WriteLine($"Layer #{i}");
+                            Console.WriteLine($"\n  Layer #{i}");
                         }
                         for(int j = 0; j < Temp.Value.Count; j++)
                         {
@@ -192,8 +232,8 @@ namespace Lab1
 
                             if (Debug)
                             {
-                                Console.WriteLine($"\tS#{j} = {neuron.Value}"/*$"\tS#{i}#{j} = {neuron.Value}"*/);
-                                Console.WriteLine($"\tY#{j} = {Function.Calculate(neuron.Value)}"/*$"\tY#{i}#{j} = {Function.Calculate(neuron.Value)}"*/);
+                                Console.WriteLine($"\tS#{j} = {neuron.Value}");
+                                Console.WriteLine($"\tY#{j} = {Function.Calculate(neuron.Value)}");
                             }
                             if (Temp == Layers.Last)
                             {
@@ -215,7 +255,7 @@ namespace Lab1
                             neuron.Delta = delta_j;
                             if (Debug)
                             {
-                                Console.WriteLine($"\tDELTA #{j} = {neuron.Delta}\n"/*$"\tΔ#{i}#{j} = {neuron.Delta}\n"*/);
+                                Console.WriteLine($"\tDELTA #{j} = {neuron.Delta}\n");
                             }
                         }
                         i--;
@@ -253,7 +293,7 @@ namespace Lab1
                             }
                         }
                         i++;
-                    } while ((Temp = Temp.Next) != null);
+                    } while ((Temp = Temp.Next) != null);*/
                 }
                 
                 if (Debug)
@@ -263,14 +303,14 @@ namespace Lab1
                     Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}\n");
                 }
                 counter++;
-                /*if (counter > 1E+10)
+                if (counter > 1000000)
                 {
                     throw new Exception("No Solution Found!");
-                }*/
+                }
             }
             if (Debug)
             {
-                Console.WriteLine("Done!");
+                Console.WriteLine("Completed!");
             }
         }
     }
