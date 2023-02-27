@@ -41,6 +41,7 @@ namespace Lab1
         }
         public double GlobalError { get; private set; }
         public bool Debug = false;
+        public bool ShowResult = false;
         public IFunction Function { get; set; }
 
         public Network(IFunction function, List<Neuron> input, Neuron output, double Result, int LayersNum, int constant = 1)
@@ -74,6 +75,7 @@ namespace Lab1
             Output = output;
             Output.RandomizeWeights(Layers.Last.Value, Result, Const);
             Layers.AddLast(new List<Neuron>() { Output });
+            Const = constant;
         }
         public Network(IFunction function, LinkedList<List<Neuron>> network, Neuron output, int constant = 1/*, double result*/)
         {
@@ -94,10 +96,11 @@ namespace Lab1
 
         public double Calculate()
         {
+            string Line = new ('-', 14);
             LinkedListNode<List<Neuron>> Temp = Layers.First.Next;
-            if (Debug)
+            if (Debug || ShowResult)
             {
-                Console.WriteLine("\nInput values:");
+                Console.WriteLine($"{Line}\nInput values:\n{Line}");
                 for (int j = 0; j < Input.Count; j++)
                 {
                     Console.WriteLine($"\tX{j}: {Input[j].Value}");
@@ -133,7 +136,7 @@ namespace Lab1
             {
                 throw new InvalidOperationException("Learning speed is restricted in 0 to 1 (%)");
             }
-            if (Debug)
+            if (Debug || ShowResult)
             {
                 Console.WriteLine($"Learning Speed: {LearningSpeed}");
                 Console.WriteLine("\nInput values:");
@@ -147,7 +150,7 @@ namespace Lab1
             long counter = 0;
             while (Result - Function.Calculate(Output.Value) > Epsilon)
             {
-                if (Debug)
+                if (Debug || ShowResult)
                 {
                     Console.WriteLine($"Epoch #{counter}");
                 }
@@ -296,7 +299,7 @@ namespace Lab1
                     } while ((Temp = Temp.Next) != null);*/
                 }
                 
-                if (Debug)
+                if (Debug || ShowResult)
                 {
                     Console.WriteLine($"\nGlobal Error: {GlobalError}\n");
                     Console.WriteLine($"Expected Result: {Result}");
@@ -308,7 +311,7 @@ namespace Lab1
                     throw new Exception("No Solution Found!");
                 }
             }
-            if (Debug)
+            if (Debug || ShowResult)
             {
                 Console.WriteLine("Completed!");
             }

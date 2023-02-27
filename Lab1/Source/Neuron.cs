@@ -7,7 +7,7 @@ namespace Lab1
 
     class Neuron
     {
-        public double Value { get; private set; }
+        public double Value { get; set; }
 
         // For propagation option 2
         public double Delta { get; set; }
