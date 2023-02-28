@@ -43,16 +43,6 @@ namespace Lab1
                 }
             }
 
-            // NOT Network
-            List<Neuron> neuron = new() { new Neuron(0) };
-            weights = new() { -1.5 };
-            output.SetWeights(neuron, weights);
-            neural.Function = Not.Instance;
-            Console.WriteLine($"{Line}\n\tNOT");
-            Console.WriteLine($"{Line}\nFinal Result: {neural.Calculate()}\n\n{new string('-', 10)}");
-            neuron[0].Value = 1;
-            Console.WriteLine($"{Line}\nFinal Result: {neural.Calculate()}\n");
-
             // XOR Network
             List<Neuron> afterFirst = new() { new Neuron(), new Neuron() };
             list.AddAfter(list.First, afterFirst);
@@ -74,6 +64,22 @@ namespace Lab1
                 }
             }
 
+            // NOT Network
+            //List<Neuron> neuron = new() { new Neuron(0) };
+            //list.RemoveFirst();
+            //list.AddFirst(neuron);
+            list.Remove(list.First.Next);
+            List<Neuron> neuron = list.First.Value;
+            neuron.Clear();
+            neuron.Add(new Neuron(0));
+            weights = new() { -1.5 };
+            output.SetWeights(neuron, weights);
+            neural.Function = Not.Instance;
+            Console.WriteLine($"{Line}\n\tNOT");
+            Console.WriteLine($"{Line}\nFinal Result: {neural.Calculate()}\n\n");
+            neuron[0].Value = 1;
+            Console.WriteLine($"{Line}\nFinal Result: {neural.Calculate()}\n");
+
             Line = new string('=', 18);
             Console.WriteLine($"\n{Line}\n\tPAUSE\n{Line}");
             Console.ReadKey();
@@ -82,7 +88,7 @@ namespace Lab1
             neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
             Neuron result = new();
             Network network = new(Sigmoid.Instance, neurons, result, 1, 1);
-            network.Debug = true;
+            network.ShowResult = true;
             network.Propagate(1, 1);
             Console.ReadKey();
         }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab1
 {
@@ -11,20 +9,6 @@ namespace Lab1
         private LinkedList<List<Neuron>> Layers { get; set; }
         public Neuron Output { get; private set; }
         public List<Neuron> Input { get; private set; }
-
-        private double MetaEpsilon;
-        public double Epsilon
-        {
-            get { return MetaEpsilon; } 
-            set
-            {
-                if (Epsilon < 0)
-                {
-                    throw new InvalidOperationException("Positive or zero values only");
-                }
-                MetaEpsilon = value;
-            }
-        }
 
         private int MetaConst;
         public int Const
@@ -77,7 +61,7 @@ namespace Lab1
             Layers.AddLast(new List<Neuron>() { Output });
             Const = constant;
         }
-        public Network(IFunction function, LinkedList<List<Neuron>> network, Neuron output, int constant = 1/*, double result*/)
+        public Network(IFunction function, LinkedList<List<Neuron>> network, Neuron output, int constant = 1)
         {
             if (network.Count < 1)
             {
@@ -130,7 +114,7 @@ namespace Lab1
             return Function.Calculate(Output.Value);
         }
 
-        public void Propagate(double LearningSpeed, double Result)
+        public void Propagate(double LearningSpeed, double Result, double Epsilon = 0)
         {
             if (LearningSpeed < 0 || LearningSpeed > 1)
             {
@@ -198,7 +182,7 @@ namespace Lab1
                                     Console.WriteLine($"\tW#{j}#{k} = {connection.Value}");
                                     Console.WriteLine($"\tDELTA W#{j}#{k} = {delta_Wj}");
                                 }
-                                // AVERAGE ΔW = Σ#i (ΔW#i#j) => j = (0; N)
+                                // AVERAGE ΔW = (Σ#i (ΔW#i#j)) / N => j = (0; N)
                                 average_W += delta_Wj / neuron.PreviousWeights.Count;
                             }
                             if (Debug)
