@@ -111,7 +111,7 @@ namespace Lab1
                 }
                 i++;
             } while ((Temp = Temp.Next) != null);
-            return Function.Calculate(Output.Value);
+            return Output.Value;//Function.Calculate(Output.Value);
         }
 
         public void Propagate(double LearningSpeed, double Result, double Epsilon = 0)
@@ -132,7 +132,7 @@ namespace Lab1
 
             LinkedListNode<List<Neuron>> Temp;
             long counter = 0;
-            while (Result - Function.Calculate(Output.Value) > Epsilon)
+            do
             {
                 if (Debug || ShowResult)
                 {
@@ -140,10 +140,10 @@ namespace Lab1
                 }
                 
                 Calculate();
-                
-                double ActualResult = Function.Calculate(Output.Value);
-                GlobalError = Result - ActualResult;
-                if (GlobalError > Epsilon)
+
+                double ActualResult = Output.Value;//Function.Calculate(Output.Value);
+                GlobalError = Result - ActualResult;//ActualResult - Result;//Result - ActualResult;
+                if (Math.Abs(GlobalError) > Epsilon)
                 {
                     // Option 1
                     Temp = Layers.First.Next;
@@ -162,7 +162,7 @@ namespace Lab1
                             if (Debug)
                             {
                                 Console.WriteLine($"\tS#{j} = {neuron.Value}");
-                                Console.WriteLine($"\tY#{j} = {Function.Calculate(neuron.Value)}");
+                                Console.WriteLine($"\tY#{j} = {(Temp == Layers.Last ? neuron.Value : Function.Calculate(neuron.Value)) /*Function.Calculate(neuron.Value)*/}");
                             }
                             for (int k = 0; k < neuron.PreviousWeights.Count; k++)
                             {
@@ -285,16 +285,16 @@ namespace Lab1
                 
                 if (Debug || ShowResult)
                 {
-                    Console.WriteLine($"\nGlobal Error: {GlobalError}\n");
+                        Console.WriteLine($"\nGlobal Error: {GlobalError}\n");
                     Console.WriteLine($"Expected Result: {Result}");
-                    Console.WriteLine($"Actual Result: {Function.Calculate(Output.Value)}\n");
+                    Console.WriteLine($"Actual Result: {Output.Value/*Function.Calculate(Output.Value)*/}\n");
                 }
                 counter++;
                 if (counter > 1000000)
                 {
                     throw new Exception("No Solution Found!");
                 }
-            }
+            }while (Math.Abs(GlobalError)/*Result - Function.Calculate(Output.Value)*/ > Epsilon);
             if (Debug || ShowResult)
             {
                 Console.WriteLine("Completed!");
