@@ -17,7 +17,7 @@ namespace Lab1
             output.SetWeights(neurons, weights);
             list.AddLast(neurons);
             list.AddLast(new List<Neuron>() { output });
-            Network neural = new(And.Instance, list, output);
+            Network neural = new(And.Instance, list);
             neural.ShowResult = true;
             Console.WriteLine($"{Line}\n\tAND");
             for (int i = 0; i < 2; i++)
@@ -26,7 +26,8 @@ namespace Lab1
                 {
                     neurons[0].Value = i;
                     neurons[1].Value = j;
-                    Console.WriteLine($"{Line}\nFinal Result: {And.Instance.Calculate(neural.Calculate())}\n");
+                    neural.Calculate();
+                    Console.WriteLine($"{Line}\nFinal Result: {And.Instance.Calculate(output.Value)}\n");
                 }
             }
 
@@ -39,7 +40,8 @@ namespace Lab1
                 {
                     neurons[0].Value = i;
                     neurons[1].Value = j;
-                    Console.WriteLine($"{Line}\nFinal Result: {Or.Instance.Calculate(neural.Calculate())}\n");
+                    neural.Calculate();
+                    Console.WriteLine($"{Line}\nFinal Result: {Or.Instance.Calculate(output.Value)}\n");
                 }
             }
 
@@ -60,7 +62,8 @@ namespace Lab1
                 {
                     neurons[0].Value = i;
                     neurons[1].Value = j;
-                    Console.WriteLine($"{Line}\nFinal Result: {Xor.Instance.Calculate(neural.Calculate())}\n");
+                    neural.Calculate();
+                    Console.WriteLine($"{Line}\nFinal Result: {Xor.Instance.Calculate(output.Value)}\n");
                 }
             }
 
@@ -76,21 +79,28 @@ namespace Lab1
             output.SetWeights(neuron, weights);
             neural.Function = Not.Instance;
             Console.WriteLine($"{Line}\n\tNOT");
-            Console.WriteLine($"{Line}\nFinal Result: {Not.Instance.Calculate(neural.Calculate())}\n\n");
+            neural.Calculate();
+            Console.WriteLine($"{Line}\nFinal Result: {Not.Instance.Calculate(output.Value)}\n\n");
             neuron[0].Value = 1;
-            Console.WriteLine($"{Line}\nFinal Result: {Not.Instance.Calculate(neural.Calculate())}\n");
+            neural.Calculate();
+            Console.WriteLine($"{Line}\nFinal Result: {Not.Instance.Calculate(output.Value)}\n");
 
             Line = new string('=', 18);
             Console.WriteLine($"\n{Line}\n\tPAUSE\n{Line}");
             Console.ReadKey();
 
             // Back Propagation - Network 3 + 3 + 1
-            neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
-            Neuron result = new();
-            Network network = new(Sigmoid.Instance, neurons, result, 1, 1);
+            //neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
+            neurons = new() { new Neuron(1.59), new Neuron(5.73), new Neuron(0.48) };
+            //Neuron result = new(1);
+            Neuron result = new(5.28);
+            Network network = new(Sigmoid.Instance, neurons, new List<Neuron>() { result }, 1, 3);
+            network.Print();
             network.ShowResult = true;
-            network.Propagate(1, 1, 1E-12);
-            neurons[0].Value = 0;
+            network.Debug = true;
+            //network.Propagate(new List<double> { 1 }, 1, 1E-12);
+            network.Propagate(new List<double> { 5.28 }, 1, 1E-12);
+            /*neurons[0].Value = 0;
             neurons[1].Value = 1;
             neurons[2].Value = 0;
             network.Propagate(1, 1, 1E-12);
@@ -111,7 +121,29 @@ namespace Lab1
             neurons[2].Value = 0;
             Console.WriteLine($"{Line}\n\tSigmoid Logic operator");
             Console.WriteLine($"{Line}\nFinal Result: {neural.Calculate()}\n");
-            //network.Propagate(1, 1, 1E-15);
+            //network.Propagate(1, 1, 1E-15);*/
+            /*neurons[0].Value = 1.59;
+            neurons[1].Value = 5.73;
+            neurons[2].Value = 0.48;*/
+            //network.Propagate(1, 5.28, 1E-12);
+            //neurons[0].Value = 5.73;
+            //neurons[1].Value = 0.48;
+            //neurons[2].Value = 5.28;
+            /*network.Propagate(1, 1.35, 1E-12);
+            neurons[0].Value = 0.48;
+            neurons[1].Value = 5.28;
+            neurons[2].Value = 1.35;*/
+            /*network.Propagate(1, 1, 1E-12);
+            neurons[0].Value = 1;
+            neurons[1].Value = 0;
+            neurons[2].Value = 0;
+            network.Propagate(1, 1, 1E-12);
+            neurons[0].Value = 0;
+            neurons[1].Value = 1;
+            neurons[2].Value = 0;*/
+            Console.WriteLine($"{Line}\n\tSigmoid Logic operator");
+            network.Calculate();
+            Console.WriteLine($"{Line}\nFinal Result: {result.Value}\n");
             Console.ReadKey();
         }
     }

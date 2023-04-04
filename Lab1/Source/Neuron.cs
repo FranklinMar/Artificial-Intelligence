@@ -8,17 +8,20 @@ namespace Lab1
     {
         public double Value { get; set; }
 
+        //public double Output { get; private set; }
+
         // For propagation option 2
         public double Delta { get; set; }
 
-        public IDictionary<Neuron, double> PreviousWeights { get; private set; } = null;
-        private List<Neuron> PreviousLayer { get; set; }
+        public Dictionary<Neuron, double> PreviousWeights { get; private set; } = null;
+        //private List<Neuron> PreviousLayer { get; set; }
 
         public Neuron(double value = 0)
         {
             Value = value;
         }
-        public void RandomizeWeights(List<Neuron> previousLayer, double? value = null, double? Const = null)
+
+        public void RandomizeWeights(List<Neuron> previousLayer/*, double? Value = null, double? Const = null*/)
         {
             Random generator = new();
             PreviousWeights = new Dictionary<Neuron, double>();
@@ -28,19 +31,32 @@ namespace Lab1
                 // Maximum = Value + Const
                 // Minimum = Value - Const
                 // Maximum - Minimum = Value + Const - Value + Const = 2 * Const
-                if (value != null && Const != null) { 
-                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble() * 2 * (double) Const + (double) value - (double) Const, 1));
-                } 
-                else
+                //if (value != null && Const != null) {
+                double Random = 0;
+                //double constant = (Const == 0 || Const == null ? 1 : (double)Const), value = (Value == 0 || Value == null ? 1 : (double)Value);
+                while (Random == 0)
                 {
-                    PreviousWeights.Add(neuron, Math.Round(generator.NextDouble(), 1));
+                    Random = generator.NextDouble() - 0.5;// * 2 * constant + value - constant;
+                    //Random = generator.NextDouble() * ((Value ?? 1) + (Const ?? 1) - ((Value ?? 1) - (Const ?? 1))) + ((Value ?? 1) - (Const ?? 1));
+                    //Console.WriteLine(Random);
                 }
+                PreviousWeights.Add(neuron, Random);
+                //} 
+                /*else
+                {
+                    double Value = 0;
+                    while (Value == 0) {
+                        Value = generator.NextDouble();
+                        //Console.WriteLine(Value);
+                    }
+                    PreviousWeights.Add(neuron, Value);
+                }*/
 
             }
-            PreviousLayer = previousLayer;
+            //PreviousLayer = previousLayer;
         }
 
-        public void SetWeights(List<Neuron> previousLayer, IList<double> weights)
+        public void SetWeights(List<Neuron> previousLayer, List<double> weights)
         {
             if (previousLayer.Count != weights.Count)
             {
@@ -51,20 +67,20 @@ namespace Lab1
             {
                 PreviousWeights.Add(previousLayer[i], weights[i]);
             }
-            PreviousLayer = previousLayer;
+            //PreviousLayer = previousLayer;
         }
         public void NullifyWeights()
         {
             PreviousWeights = null;
-            PreviousLayer = null;
+            //PreviousLayer = null;
         }
 
         public double WeightSum(IFunction Function)
         {
-            if (PreviousLayer == null)
+            /*if (PreviousLayer == null)
             {
                 throw new InvalidOperationException("No previous layer of neurons found");
-            }
+            }*/
             if (PreviousWeights == null)
             {
                 throw new InvalidOperationException("No weights of neuron connection found");
@@ -72,7 +88,6 @@ namespace Lab1
             Value = 0;
             foreach (KeyValuePair<Neuron, double> pair in PreviousWeights)
             {
-
                 Value += (Function == null ? pair.Key.Value : Function.Calculate(pair.Key.Value)) * pair.Value;
             }
             return Value;
