@@ -91,14 +91,16 @@ namespace Lab1
 
             // Back Propagation - Network 3 + 3 + 1
             //neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
+            //neurons = new() { new Neuron(10), new Neuron(5), new Neuron(2) };
             neurons = new() { new Neuron(1.59), new Neuron(5.73), new Neuron(0.48) };
             //Neuron result = new(1);
             Neuron result = new(5.28);
-            Network network = new(Sigmoid.Instance, neurons, new List<Neuron>() { result }, 1, 3);
+            Network network = new(Sigmoid.Instance, neurons, new List<Neuron>() { result }, 3);
             network.Print();
             network.ShowResult = true;
-            network.Debug = true;
+            //network.Debug = true;
             //network.Propagate(new List<double> { 1 }, 1, 1E-12);
+            //network.Propagate(new List<double> { 4 }, 1, 1E-12);
             network.Propagate(new List<double> { 5.28 }, 1, 1E-12);
             /*neurons[0].Value = 0;
             neurons[1].Value = 1;
@@ -129,10 +131,7 @@ namespace Lab1
             //neurons[0].Value = 5.73;
             //neurons[1].Value = 0.48;
             //neurons[2].Value = 5.28;
-            /*network.Propagate(1, 1.35, 1E-12);
-            neurons[0].Value = 0.48;
-            neurons[1].Value = 5.28;
-            neurons[2].Value = 1.35;*/
+            /*network.Propagate(1, 1.35, 1E-12);*/
             /*network.Propagate(1, 1, 1E-12);
             neurons[0].Value = 1;
             neurons[1].Value = 0;
@@ -141,6 +140,20 @@ namespace Lab1
             neurons[0].Value = 0;
             neurons[1].Value = 1;
             neurons[2].Value = 0;*/
+            /*neurons[0].Value = 10;
+            neurons[1].Value = 2;
+            neurons[2].Value = 2.5;*/
+            neurons[0].Value = 5.73;
+            neurons[1].Value = 0.48;
+            neurons[2].Value = 5.28;
+            network.Propagate(new List<double> { 1.35 }, 1, 1E-12);
+            neurons[0].Value = 0.48;
+            neurons[1].Value = 5.28;
+            neurons[2].Value = 1.35;
+            network.Propagate(new List<double> { 5.91 }, 1, 1E-12);
+            neurons[0].Value = 5.28;
+            neurons[1].Value = 1.35;
+            neurons[2].Value = 5.91;
             Console.WriteLine($"{Line}\n\tSigmoid Logic operator");
             network.Calculate();
             Console.WriteLine($"{Line}\nFinal Result: {result.Value}\n");

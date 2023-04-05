@@ -250,14 +250,14 @@ namespace Lab1
                             if (Temp == Layers.Last)
                             {
                                 //delta_j = ActualResult * (1 - ActualResult) * GlobalError;
-                                delta_j = neuron.Value * (1 - neuron.Value) * (Result[j] - neuron.Value); //Function.Calculate(neuron.Value) * (1 - Function.Calculate(neuron.Value)) * (Result[j] - Function.Calculate(neuron.Value));
+                                delta_j = (neuron.Value - Result[j]) * Function.CalculateDerivative(neuron.Value);//neuron.Value * (1 - neuron.Value) * (Result[j] - neuron.Value); //Function.Calculate(neuron.Value) * (1 - Function.Calculate(neuron.Value)) * (Result[j] - Function.Calculate(neuron.Value));
                             }
                             else
                             {
                                 //List<Neuron> NextLayer = Temp.Next.Value;
-                                double Sum = 0, Value = Function.Calculate(neuron.Value); //(Temp == Layers.First) ? neuron.Value : Function.Calculate(neuron.Value);
+                                double Sum = 0, Value = Function.Calculate(neuron.Value), N = 0; //(Temp == Layers.First) ? neuron.Value : Function.Calculate(neuron.Value);
                                 //NextLayer.
-                                Temp.Next.Value.ForEach(neuro => Sum += neuro.PreviousWeights.Keys.Contains(neuron) ? neuro.Delta * neuro.PreviousWeights[neuron] : 0);
+                                Temp.Next.Value.ForEach(neuro => Sum += neuro.PreviousWeights.Keys.Contains(neuron) ? neuro.Delta * neuro.PreviousWeights[neuron] * (++N / N) : 0);
                                 //Neuron connectedNeuron = NextLayer.Find(neuro => neuro.PreviousWeights.Keys.Contains(neuron));
                                 /*if (Temp != Layers.First)
                                 {
@@ -268,7 +268,7 @@ namespace Lab1
                                 {
                                     delta_j = neuron.Value * (1 - neuron.Value) * connectedNeuron.PreviousWeights[neuron] * connectedNeuron.Delta;
                                 }*/
-                                delta_j = Value * (1 - Value) * Sum;
+                                delta_j = Function.CalculateDerivative(neuron.Value) * Sum;//Value * (1 - Value) * Sum;
                             }
                             neuron.Delta = delta_j;
                             if (Debug)
@@ -296,8 +296,8 @@ namespace Lab1
                             {
                                 KeyValuePair<Neuron, double> connection = neuron.PreviousWeights.ToList()[k];
                                 //delta_Wj = LearningSpeed * neuron.Delta * Function.Calculate(neuron.Value);//(Temp == Layers.First.Next ? connection.Value : Function.Calculate(connection.Value));
-                                delta_Wj = LearningSpeed * Function.Calculate(neuron.Value) * connection.Key.Delta;//(Temp == Layers.First.Next ? connection.Key.Value : Function.Calculate(connection.Key.Value));
-                                neuron.PreviousWeights[connection.Key] += delta_Wj;
+                                delta_Wj = LearningSpeed * neuron.Value * connection.Key.Delta;//Function.Calculate(neuron.Value)//(Temp == Layers.First.Next ? connection.Key.Value : Function.Calculate(connection.Key.Value));
+                                neuron.PreviousWeights[connection.Key] -= delta_Wj;
                                 if (Debug)
                                 {
                                     Console.WriteLine($"\tW#{j}#{k} = {connection.Value}");

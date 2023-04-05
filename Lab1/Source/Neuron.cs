@@ -36,7 +36,7 @@ namespace Lab1
                 //double constant = (Const == 0 || Const == null ? 1 : (double)Const), value = (Value == 0 || Value == null ? 1 : (double)Value);
                 while (Random == 0)
                 {
-                    Random = generator.NextDouble() - 0.5;// * 2 * constant + value - constant;
+                    Random = generator.NextDouble();// * 2 - 1;// - 0.5;// * 2 * constant + value - constant;
                     //Random = generator.NextDouble() * ((Value ?? 1) + (Const ?? 1) - ((Value ?? 1) - (Const ?? 1))) + ((Value ?? 1) - (Const ?? 1));
                     //Console.WriteLine(Random);
                 }
