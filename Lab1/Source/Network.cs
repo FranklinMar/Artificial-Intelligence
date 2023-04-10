@@ -50,7 +50,7 @@ namespace Lab1
             for (int i = 0; i < LayersNum; i++)
             {
                 list = new List<Neuron>();
-                for (int j = 0; j < input.Count; j++)
+                for (int j = 0; j < Math.Max(input.Count, output.Count); j++)
                 {
                     Temp = new Neuron(Layers.Last.Value[i].Value);
                     list.Add(Temp);
@@ -124,11 +124,15 @@ namespace Lab1
             //return Output.Value;//Function.Calculate(Output.Value);
         }
 
-        public void Propagate(List<double> Result, double LearningSpeed, double Epsilon = 0)
+        public void Propagate(List<double> Result, double LearningSpeed, double Momentum, double Epsilon = 0)
         {
             if (LearningSpeed < 0 || LearningSpeed > 1)
             {
-                throw new InvalidOperationException("Learning speed is restricted in 0 to 1 (%)");
+                throw new ArgumentException("Learning speed is restricted in 0 to 1 (%)");
+            }
+            if (Momentum < 0 || Momentum > 1)
+            {
+                throw new ArgumentException("Learning speed is restricted in 0 to 1 (%)");
             }
             if (Result.Count != Output.Count)
             {
@@ -296,8 +300,9 @@ namespace Lab1
                             {
                                 KeyValuePair<Neuron, double> connection = neuron.PreviousWeights.ToList()[k];
                                 //delta_Wj = LearningSpeed * neuron.Delta * Function.Calculate(neuron.Value);//(Temp == Layers.First.Next ? connection.Value : Function.Calculate(connection.Value));
-                                delta_Wj = LearningSpeed * neuron.Value * connection.Key.Delta;//Function.Calculate(neuron.Value)//(Temp == Layers.First.Next ? connection.Key.Value : Function.Calculate(connection.Key.Value));
-                                neuron.PreviousWeights[connection.Key] -= delta_Wj;
+                                delta_Wj = -LearningSpeed * neuron.Value * connection.Key.Delta;//Function.Calculate(neuron.Value)//(Temp == Layers.First.Next ? connection.Key.Value : Function.Calculate(connection.Key.Value));
+                                neuron.PreviousWeights[connection.Key] += delta_Wj + Momentum * neuron.DeltaWeights[connection.Key];
+                                neuron.DeltaWeights[connection.Key] = delta_Wj;
                                 if (Debug)
                                 {
                                     Console.WriteLine($"\tW#{j}#{k} = {connection.Value}");
@@ -322,10 +327,10 @@ namespace Lab1
                     //Console.WriteLine($"Actual Result: {/*Output.Value*//*Function.Calculate(Output.Value)*/}\n");
                 }
                 counter++;
-                if (counter > 1000000)
+                /*if (counter > 1000000)
                 {
                     throw new Exception("No Solution Found!");
-                }
+                }*/
             } while (Math.Abs(GlobalError)/*Result - Function.Calculate(Output.Value)*/ > Epsilon);
             if (Debug || ShowResult)
             {

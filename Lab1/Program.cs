@@ -88,6 +88,7 @@ namespace Lab1
             Line = new string('=', 18);
             Console.WriteLine($"\n{Line}\n\tPAUSE\n{Line}");
             Console.ReadKey();
+            Console.Clear();
 
             // Back Propagation - Network 3 + 3 + 1
             //neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
@@ -95,13 +96,15 @@ namespace Lab1
             neurons = new() { new Neuron(1.59), new Neuron(5.73), new Neuron(0.48) };
             //Neuron result = new(1);
             Neuron result = new(5.28);
-            Network network = new(Sigmoid.Instance, neurons, new List<Neuron>() { result }, 3);
-            network.Print();
+            List<double> Results = new ();
+            Results.Add(5.28);
+            List<Neuron> ResultLayer = new() { result };
+            Network network = new(Sigmoid.Instance, neurons, ResultLayer, 3);
+            //network.Print();
             network.ShowResult = true;
             //network.Debug = true;
             //network.Propagate(new List<double> { 1 }, 1, 1E-12);
             //network.Propagate(new List<double> { 4 }, 1, 1E-12);
-            network.Propagate(new List<double> { 5.28 }, 1, 1E-12);
             /*neurons[0].Value = 0;
             neurons[1].Value = 1;
             neurons[2].Value = 0;
@@ -128,9 +131,6 @@ namespace Lab1
             neurons[1].Value = 5.73;
             neurons[2].Value = 0.48;*/
             //network.Propagate(1, 5.28, 1E-12);
-            //neurons[0].Value = 5.73;
-            //neurons[1].Value = 0.48;
-            //neurons[2].Value = 5.28;
             /*network.Propagate(1, 1.35, 1E-12);*/
             /*network.Propagate(1, 1, 1E-12);
             neurons[0].Value = 1;
@@ -143,6 +143,10 @@ namespace Lab1
             /*neurons[0].Value = 10;
             neurons[1].Value = 2;
             neurons[2].Value = 2.5;*/
+            /*neurons[0].Value = 5.73;
+            neurons[1].Value = 0.48;
+            neurons[2].Value = 5.28;
+            network.Propagate(new List<double> { 5.28 }, 1, 1E-12);
             neurons[0].Value = 5.73;
             neurons[1].Value = 0.48;
             neurons[2].Value = 5.28;
@@ -156,7 +160,45 @@ namespace Lab1
             neurons[2].Value = 5.91;
             Console.WriteLine($"{Line}\n\tSigmoid Logic operator");
             network.Calculate();
-            Console.WriteLine($"{Line}\nFinal Result: {result.Value}\n");
+            Console.WriteLine($"{Line}\nFinal Result: {result.Value}\n");*/
+            double [] learnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 0.88, 4.14, 0.07, 4.77, 1.95, 4.18, 0.04, 5.05, 1.40};
+            int Num = 5000;
+            for (int k = 0; k < Num; k++) 
+            {
+                for (int i = 0; i < learnData.Length - neurons.Count - Results.Count; i++)
+                {
+                    for (int j = 0; j < neurons.Count; j++)
+                    {
+                        neurons[j].Value = learnData[i + j];
+                    }
+                    for (int j = 0; j < Results.Count; j++)
+                    {
+                        Results[j] = learnData[i + neurons.Count + j];
+                    }
+                    network.Propagate(Results, 0.1, 0.1, 1E-12);
+                }
+                Console.WriteLine((k / (double)Num * 100.0) + "%");
+            }
+            Console.Clear();
+            for (int i = 0; i < learnData.Length - neurons.Count - Results.Count; i++)
+            {
+                for (int j = 0; j < neurons.Count; j++)
+                {
+                    Console.Write($"X {(neurons.Count != 1 ? j.ToString() : "")} = {learnData[i + j]} |");
+                    neurons[j].Value = learnData[i + j];
+                }
+                network.Calculate();
+                Console.WriteLine("\nExpected result");
+                for (int j = 0; j < Results.Count; j++)
+                {
+                    Console.Write($"y {(Results.Count != 1 ? j.ToString() : "")} = {learnData[i + neurons.Count + j]} |");
+                }
+                Console.WriteLine("\nActual result");
+                for (int j = 0; j < ResultLayer.Count; j++)
+                {
+                    Console.Write($"Y {(ResultLayer.Count != 1 ? j.ToString() : "")} = {ResultLayer[j].Value} |");
+                }
+            }
             Console.ReadKey();
         }
     }

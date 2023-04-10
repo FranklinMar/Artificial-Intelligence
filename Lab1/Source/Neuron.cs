@@ -14,6 +14,7 @@ namespace Lab1
         public double Delta { get; set; }
 
         public Dictionary<Neuron, double> PreviousWeights { get; private set; } = null;
+        public Dictionary<Neuron, double> DeltaWeights { get; set; } = null;
         //private List<Neuron> PreviousLayer { get; set; }
 
         public Neuron(double value = 0)
@@ -25,6 +26,7 @@ namespace Lab1
         {
             Random generator = new();
             PreviousWeights = new Dictionary<Neuron, double>();
+            DeltaWeights = new Dictionary<Neuron, double>();
             foreach (Neuron neuron in previousLayer)
             {
                 // random.NextDouble() * (Maximum - Minimum) + Minimum;
@@ -41,6 +43,9 @@ namespace Lab1
                     //Console.WriteLine(Random);
                 }
                 PreviousWeights.Add(neuron, Random);
+                DeltaWeights.Add(neuron, 0);
+
+                
                 //} 
                 /*else
                 {
@@ -63,15 +68,18 @@ namespace Lab1
                 throw new InvalidOperationException("Number of neurons and weights do not match");
             }
             PreviousWeights = new Dictionary<Neuron, double>();
+            DeltaWeights = new Dictionary<Neuron, double>();
             for (int i = 0; i < previousLayer.Count; i++)
             {
                 PreviousWeights.Add(previousLayer[i], weights[i]);
+                DeltaWeights.Add(previousLayer[i], 0);
             }
             //PreviousLayer = previousLayer;
         }
         public void NullifyWeights()
         {
             PreviousWeights = null;
+            DeltaWeights = null;
             //PreviousLayer = null;
         }
 
