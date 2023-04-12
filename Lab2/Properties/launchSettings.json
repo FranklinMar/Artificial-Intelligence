@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Lab2": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Key": "Value"
+      }
+    }
+  }
+}
