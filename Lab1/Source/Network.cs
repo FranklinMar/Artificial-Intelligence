@@ -91,7 +91,20 @@ namespace Lab1
             Layers.ToList().ForEach(i => Console.WriteLine(string.Concat(Enumerable.Repeat("0 ", i.Count))));
         }
 
-        public void Calculate()
+        public double[] Calculate(double [] Array)
+        {
+            if (Array.Length != Input.Count)
+            {
+                throw new ArgumentException("Input array size doesn't correspond to Input layer");
+            }
+            for(int i = 0; i < Array.Length; i++)
+            {
+                Input[i].Value = Array[i];
+            }
+            return Calculate();
+        }
+
+        public double[] Calculate()
         {
             string Line = new ('-', 14);
             LinkedListNode<List<Neuron>> Temp = Layers.First.Next;
@@ -116,6 +129,7 @@ namespace Lab1
                     // S = Σ (Wi * xi)
                     // Y = F(S)
                     neuron.WeightSum(Function);
+                    neuron.Delta = 0;
                     //neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
                     if (Debug)
                     {
@@ -125,6 +139,12 @@ namespace Lab1
                 }
                 i++;
             } while ((Temp = Temp.Next) != null);
+            double[] Result = new double[Output.Count];
+            for (int l = 0; l < Result.Length; l++)
+            {
+                Result[l] = Output[l].Value;
+            }
+            return Result;
             //return Output.Value;//Function.Calculate(Output.Value);
         }
 

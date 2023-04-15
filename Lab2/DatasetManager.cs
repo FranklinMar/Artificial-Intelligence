@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Lab1;
 
 namespace Lab2
 {
@@ -12,36 +12,17 @@ namespace Lab2
         public static int SIZE = 6;
         public static void Shuffle<T>(this IList<T> List)
         {
-            var Generator = new RNGCryptoServiceProvider();
+            var Generator = new SecureRandom();
             int n = List.Count;
             while (n > 1)
             {
-                byte[] Box = new byte[1];
-                do Generator.GetBytes(Box);
-                while (!(Box[0] < n * (Byte.MaxValue / n)));
-                int k = (Box[0] % n);
                 n--;
+                int k = Generator.Next(n + 1);
                 T Value = List[k];
                 List[k] = List[n];
                 List[n] = Value;
             }
         }
-        /*public static void ShuffleData(List<int[][]> List)
-        {
-            var Generator = new RNGCryptoServiceProvider();
-            int n = List.Count;
-            while (n > 1)
-            {
-                byte[] Box = new byte[1];
-                do Generator.GetBytes(Box);
-                while (!(Box[0] < n * (Byte.MaxValue / n)));
-                int k = (Box[0] % n);
-                n--;
-                int [][] Value = List[k];
-                List[k] = List[n];
-                List[n] = Value;
-            }
-        }*/
 
         public static Dictionary<string, List<int[]>> ConvoluteDataset(Dictionary<string, List<int[][]>> Datasets, Convolution Layer)
         {

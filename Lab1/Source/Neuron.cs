@@ -23,7 +23,7 @@ namespace Lab1
 
         public void RandomizeWeights(List<Neuron> previousLayer/*, double? Value = null, double? Const = null*/)
         {
-            Random generator = new();
+            SecureRandom generator = new();
             PreviousWeights = new Dictionary<Neuron, double>();
             DeltaWeights = new Dictionary<Neuron, double>();
             foreach (Neuron neuron in previousLayer)

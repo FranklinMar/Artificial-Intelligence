@@ -1,4 +1,5 @@
 ﻿using System;
+using Lab1;
 
 namespace Lab2
 {
@@ -11,12 +12,12 @@ namespace Lab2
         public Convolution()
         {
             //var provider = new RNGCryptoServiceProvider();
-            var Gen = new Random();
+            var Generator = new SecureRandom();
             for (int i = 0; i < Filter.GetLength(0); i++)
             {
                 for (int j = 0; j < Filter.GetLength(1); j++)
                 {
-                    Filter[i, j] = Gen.Next(0, 1);
+                    Filter[i, j] = Generator.Next(0, 1);
                 }
             }
         }
