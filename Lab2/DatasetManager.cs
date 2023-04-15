@@ -24,25 +24,6 @@ namespace Lab2
             }
         }
 
-        public static Dictionary<string, List<int[]>> ConvoluteDataset(Dictionary<string, List<int[][]>> Datasets, Convolution Layer)
-        {
-            Dictionary<string, List<int[]>> ConvolutedDatasets = new();
-            List<int[]> List;
-            int[][] Dataset;
-            foreach (KeyValuePair<string, List<int[][]>> Var in Datasets)
-            {
-                List = new();
-                foreach (int[][] Matrix in Var.Value)
-                {
-                    Dataset = Layer.MaxPool(Layer.Convolute(Matrix));
-                    
-                    List.Add(FlattenArray(Dataset));
-                }
-                ConvolutedDatasets.Add(Var.Key, List);
-            }
-            return ConvolutedDatasets;
-        }
-
         public static int[] FlattenArray(int[][] Array)
         {
             int[] Temp = new int[Array.Length * Array[0].Length];
@@ -55,6 +36,25 @@ namespace Lab2
                 }
             }
             return Temp;
+        }
+
+        public static Dictionary<string, List<int[]>> ProcessDataset(Dictionary<string, List<int[][]>> Datasets, Func<int[][], int[][]> Functionn)
+        {
+            Dictionary<string, List<int[]>> ConvolutedDatasets = new();
+            List<int[]> List;
+            int[][] Dataset;
+            foreach (KeyValuePair<string, List<int[][]>> Var in Datasets)
+            {
+                List = new();
+                foreach (int[][] Matrix in Var.Value)
+                {
+                    Dataset = Functionn(Matrix);
+                    
+                    List.Add(FlattenArray(Dataset));
+                }
+                ConvolutedDatasets.Add(Var.Key, List);
+            }
+            return ConvolutedDatasets;
         }
 
         public static Dictionary<string, List<int[][]>> ExpandDataset(Dictionary<string, List<int[][]>> dataset)

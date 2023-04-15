@@ -15,7 +15,7 @@ namespace Lab2
                 {2, 1, 2 },
                 {0, 2, 0 }
             });
-            Dictionary<string, List<int[]>> ConvolutedDatasets = DatasetManager.ConvoluteDataset(Datasets, ConvolutionLayer);
+            Dictionary<string, List<int[]>> ConvolutedDatasets = DatasetManager.ProcessDataset(Datasets, Matrix => ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Matrix)));
 
             int[][] Dataset = Datasets["1"][0];
             DisplayArray(Dataset);
