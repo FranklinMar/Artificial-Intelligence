@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Lab2
 {
-
     public class Convolution
     {
         private readonly static int SIZE = 3;

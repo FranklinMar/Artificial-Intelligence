@@ -101,7 +101,7 @@ namespace Lab1
             List<Neuron> ResultLayer = new() { result };
             Network network = new(Sigmoid.Instance, neurons, ResultLayer, 3);
             //network.Print();
-            network.ShowResult = true;
+            //network.ShowResult = true;
             //network.Debug = true;
             //network.Propagate(new List<double> { 1 }, 1, 1E-12);
             //network.Propagate(new List<double> { 4 }, 1, 1E-12);
@@ -161,9 +161,9 @@ namespace Lab1
             Console.WriteLine($"{Line}\n\tSigmoid Logic operator");
             network.Calculate();
             Console.WriteLine($"{Line}\nFinal Result: {result.Value}\n");*/
-            double [] learnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 0.88, 4.14, 0.07, 4.77, 1.95, 4.18, 0.04, 5.05, 1.40};
-            int Num = 5000;
-            for (int k = 0; k < Num; k++) 
+            double [] learnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 4.14, 4.77, 1.95, 4.18, 5.05, 1.40};
+            int Num = 1000;
+            for (int k = 0; k < 100; k++) 
             {
                 for (int i = 0; i < learnData.Length - neurons.Count - Results.Count; i++)
                 {
@@ -187,6 +187,7 @@ namespace Lab1
                     Console.Write($"X {(neurons.Count != 1 ? j.ToString() : "")} = {learnData[i + j]} |");
                     neurons[j].Value = learnData[i + j];
                 }
+                Console.WriteLine();
                 network.Calculate();
                 Console.WriteLine("\nExpected result");
                 for (int j = 0; j < Results.Count; j++)
@@ -198,6 +199,7 @@ namespace Lab1
                 {
                     Console.Write($"Y {(ResultLayer.Count != 1 ? j.ToString() : "")} = {ResultLayer[j].Value} |");
                 }
+                Console.WriteLine();
             }
             Console.ReadKey();
         }

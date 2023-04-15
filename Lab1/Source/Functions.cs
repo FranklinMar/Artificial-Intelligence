@@ -22,13 +22,13 @@ namespace Lab1
         }
     }
 
-    interface IFunction
+    public interface IFunction
     {
         public double Calculate(double x);
         public double CalculateDerivative(double x);
     }
 
-    class Sigmoid : Singleton<Sigmoid>, IFunction
+    public class Sigmoid : Singleton<Sigmoid>, IFunction
     {
         public double Calculate(double x)
         {

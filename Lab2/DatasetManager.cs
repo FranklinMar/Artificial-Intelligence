@@ -7,8 +7,7 @@ using System.Text.Json;
 
 namespace Lab2
 {
-
-   public static class DatasetManager
+    public static class DatasetManager
     {
         public static int SIZE = 6;
         public static void Shuffle<T>(this IList<T> List)

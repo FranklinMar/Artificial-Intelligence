@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.Json;
 using Lab1;
 
 namespace Lab2
 {
-    
     class Program
     {
         static void Main(string[] args)
         {
-            //Dictionary<string, List<int[][]>> Templates = ReadJSON(@"..\..\..\numbers.json");
-            //LoadJSON("dataset.json", ExpandDataset(Templates));
-            Dictionary<string, List<int[][]>> Datasets = DatasetManager.ReadJSON(@"..\..\..\dataset.json");
-            Convolution ConvolutionLayer = new(new int[,]
-            {
+            
+             Dictionary<string, List<int[][]>> Datasets = DatasetManager.ReadJSON(@"..\..\..\dataset.json");
+            Convolution ConvolutionLayer = new(new int[,] {
                 {0, 2, 0 },
                 {2, 1, 2 },
                 {0, 2, 0 }

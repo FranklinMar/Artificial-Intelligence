@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Lab1
 {
-    class Network
+    public class Network
     {
         private LinkedList<List<Neuron>> Layers { get; set; }
         public List<Neuron> Output { get; private set; }
@@ -28,7 +28,7 @@ namespace Lab1
         public bool ShowResult = false;
         public IFunction Function { get; set; }
 
-        public Network(IFunction function, List<Neuron> input, List<Neuron> output, int LayersNum, int constant = 1)
+        public Network(IFunction function, List<Neuron> input, List<Neuron> output, int LayersNum)
         {
             if (LayersNum < 1)
             {
@@ -39,6 +39,10 @@ namespace Lab1
                 throw new InvalidOperationException("Number of input neurons must be bigger than zero");
             }
 
+            if (output.Count < 1)
+            {
+                throw new InvalidOperationException("Number of input neurons must be bigger than zero");
+            }
             Function = function;
             Input = input;
             Output = output;
@@ -65,7 +69,7 @@ namespace Lab1
             }
             Layers.AddLast(output);
         }
-        public Network(IFunction function, LinkedList<List<Neuron>> network, int constant = 1)
+        public Network(IFunction function, LinkedList<List<Neuron>> network)
         {
             if (network.Count < 1)
             {

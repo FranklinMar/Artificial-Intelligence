@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace Lab1
 {
-
-    class Neuron
+    public class Neuron
     {
         public double Value { get; set; }
 
@@ -101,5 +100,4 @@ namespace Lab1
             return Value;
         }
     }
-
 }
