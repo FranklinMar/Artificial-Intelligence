@@ -12,6 +12,7 @@ D:\Programs\VS Project\ArtificialIntelligence\Lab2\bin\Debug\net5.0-windows\Lab2
 D:\Programs\VS Project\ArtificialIntelligence\Lab2\bin\Debug\net5.0-windows\Lab1.dll
 D:\Programs\VS Project\ArtificialIntelligence\Lab2\bin\Debug\net5.0-windows\Lab1.pdb
 D:\Programs\VS Project\ArtificialIntelligence\Lab2\obj\Debug\net5.0-windows\Lab2.csproj.AssemblyReference.cache
+D:\Programs\VS Project\ArtificialIntelligence\Lab2\obj\Debug\net5.0-windows\Lab2.Form1.resources
 D:\Programs\VS Project\ArtificialIntelligence\Lab2\obj\Debug\net5.0-windows\Lab2.Resource.resources
 D:\Programs\VS Project\ArtificialIntelligence\Lab2\obj\Debug\net5.0-windows\Lab2.csproj.GenerateResource.cache
 D:\Programs\VS Project\ArtificialIntelligence\Lab2\obj\Debug\net5.0-windows\Lab2.GeneratedMSBuildEditorConfig.editorconfig
