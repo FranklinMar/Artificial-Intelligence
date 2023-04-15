@@ -10,105 +10,75 @@ namespace Lab2
     
     class Program
     {
-        public static int SIZE = 6;
         static void Main(string[] args)
         {
             //Dictionary<string, List<int[][]>> Templates = ReadJSON(@"..\..\..\numbers.json");
             //LoadJSON("dataset.json", ExpandDataset(Templates));
-            Dictionary<string, List<int[][]>> Datasets = ReadJSON(@"..\..\..\dataset.json");
-        }
-
-        public static Dictionary <string, List<int[][]>> ExpandDataset(Dictionary <string, List<int[][]>> dataset)
-        {
-            List<int[][]> List;
-            int[][] Field;
-            int i, j;
-            Dictionary<string, List<int[][]>> DataSets = new();
-            foreach (KeyValuePair<string, List<int[][]>> Pair in dataset)
+            Dictionary<string, List<int[][]>> Datasets = DatasetManager.ReadJSON(@"..\..\..\dataset.json");
+            Convolution ConvolutionLayer = new(new int[,]
             {
-                List = new();
-                DataSets.Add(Pair.Key, List);
-                foreach (int[][] array in Pair.Value)
+                {0, 2, 0 },
+                {2, 1, 2 },
+                {0, 2, 0 }
+            });
+            Dictionary<string, List<int[]>> ConvolutedDatasets = DatasetManager.ConvoluteDataset(Datasets, ConvolutionLayer);
+
+            int[][] Dataset = Datasets["1"][0];
+            DisplayArray(Dataset);
+            Console.WriteLine();
+            Dataset = ConvolutionLayer.Convolute(Dataset);
+            //Dataset = Layer.Convolute(Dataset);
+
+            DisplayArray(Dataset);
+            Console.WriteLine();
+            Dataset = ConvolutionLayer.MaxPool(Dataset);
+            DisplayArray(Dataset);
+            
+            List <Neuron> Inputs = new();
+            List <Neuron> Outputs = new();
+            for (int i = 0; i < Dataset.Length; i++)
+            {
+                for (int j = 0; j < Dataset[i].Length; j++)
                 {
-                    i = 0; j = 0;
-                    while (true)
+                    Inputs.Add(new Neuron(Dataset[i][j]));
+                }
+            }
+            Neuron Output = new(1);
+            Outputs.Add(Output);
+            Network NeuralNetwork = new (Sigmoid.Instance, Inputs, Outputs, 3);
+            //NeuralNetwork.ShowResult = true;
+            NeuralNetwork.Propagate(new List<double>() { Output.Value }, 0.1, 0.1, 1E-18);
+            for (int epoch = 0; epoch < 10; epoch++)
+            {
+                Console.WriteLine((epoch / 10.0) + "%");
+                foreach (KeyValuePair<string, List<int[]>> DataPair in ConvolutedDatasets)
+                {
+                    List<double> ResultList = new() { Double.Parse(DataPair.Key) };
+                    foreach (int[] Data in DataPair.Value)
                     {
-                        if (j + array[0].Length > SIZE)
+                        for (int i = 0; i < Data.Length; i++)
                         {
-                            j = 0;
-                            i++;
+                            Inputs[0].Value = Data[i];
                         }
-                        if (i + array.Length > SIZE)
-                        {
-                            break;
-                        }
-                        Field = new int[SIZE][];
-                        for (int k = 0; k < Field.Length; k++)
-                        {
-                            Field[k] = new int[SIZE];
-                            Array.Clear(Field[k], 0, Field[k].Length);
-                        }
-                        for (int k = 0; k < array.Length && k + i < Field.Length; k++)
-                        {
-                            for (int l = 0; l < array[0].Length && l + j < Field[0].Length; l++)
-                            {
-                                Field[k + i][l + j] = array[k][l];
-                            }
-                        }
-                        List.Add(Field);
-                        j++;
+                        //Console.WriteLine("Result: \nArray: ");
+                        //DisplayArray(new int[][] { Data });
+                        DatasetManager.Shuffle(ResultList);
+                        NeuralNetwork.Propagate(ResultList, 0.1, 0.1, 1E-18);
                     }
                 }
             }
-            return DataSets;
         }
 
-        static Dictionary <string, List<int[][]>> ReadJSON(string filename)
+        public static void DisplayArray(int [][] Dataset)
         {
-            using (StreamReader Reader = new StreamReader(filename))
+            for (int i = 0; i < Dataset.Length; i++)
             {
-                var JSON = new StringBuilder("");
-                while (!Reader.EndOfStream)
+                for (int j = 0; j < Dataset[i].Length; j++)
                 {
-                    JSON.Append(Reader.ReadLine());
+                    Console.Write(Dataset[i][j] + (j < Dataset[i].Length - 1 ? ", " : ""));
                 }
-                Console.WriteLine(JSON);
-                return JsonSerializer.Deserialize<Dictionary<string, List<int[][]>>>(JSON.ToString());
-                /*Dictionary<string, List<int[][]>> Temporary = 
-                Dictionary<string, List<int[,]>> Result = new();
-                List<int[,]> DatasetList;
-                foreach (KeyValuePair<string, List<int[][]>> Pair in Temporary)
-                {
-                    DatasetList = new();
-                    Result.Add(Pair.Key, DatasetList);
-                    Pair.Value.ForEach(array =>
-                    {
-                        int FirstDim = array.Length,
-                            SecondDim = array[0].Length;
-                        foreach (int[] Jagged in array)
-                        {
-                            SecondDim = SecondDim < Jagged.Length ? Jagged.Length : SecondDim;
-                        }
-                        int[,] NewArray = new int[FirstDim, SecondDim];
-                        for (int i = 0; i < FirstDim; i++)
-                        {
-                            for (int j = 0; j < SecondDim; j++)
-                            {
-                                NewArray[i, j] = array[i][j];
-                            }
-                        }
-                        DatasetList.Add(NewArray);
-                    });
-                }*/
+                Console.WriteLine();
             }
-        }
-
-        static void LoadJSON(string filename, Dictionary<string, List<int[][]>> data)
-        {
-            string JSON = JsonSerializer.Serialize(data);
-            //await using FileStream createStream = File.Create(@$"D:\{filename}.json");
-            //await JsonSerializer.SerializeAsync(createStream, J);
-            File.WriteAllText(@$"D:\{filename}", JSON);
         }
     }
 }
