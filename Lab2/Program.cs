@@ -17,9 +17,9 @@ namespace Lab2
             AllocConsole();
             Dictionary<string, List<int[][]>> Datasets = DatasetManager.ReadJSON(@"..\..\..\dataset.json");
             Convolution ConvolutionLayer = new(new int[,] {
-                {0, 1, 0 },
                 {1, 0, 1 },
-                {0, 1, 0 }
+                {0, 1, 0 },
+                {1, 0, 1 }
             });
             Dictionary<string, List<int[]>> ConvolutedDatasets = DatasetManager.ProcessDataset(Datasets, Matrix => ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Matrix)));
 
