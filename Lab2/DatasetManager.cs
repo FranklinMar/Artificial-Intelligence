@@ -38,6 +38,19 @@ namespace Lab2
             return Temp;
         }
 
+        public static List<KeyValuePair<K, V>> DictionaryToList<K, V>(this Dictionary<K, List<V>> Dictionary)
+        {
+            List<KeyValuePair<K, V>> ResultList = new();
+            foreach(KeyValuePair<K, List<V>> DataPair in Dictionary)
+            {
+                foreach(V Value in DataPair.Value)
+                {
+                    ResultList.Add(new KeyValuePair<K, V>(DataPair.Key, Value));
+                }
+            }
+            return ResultList;
+        }
+
         public static Dictionary<string, List<int[]>> ProcessDataset(Dictionary<string, List<int[][]>> Datasets, Func<int[][], int[][]> Functionn)
         {
             Dictionary<string, List<int[]>> ConvolutedDatasets = new();

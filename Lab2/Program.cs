@@ -17,9 +17,9 @@ namespace Lab2
             AllocConsole();
             Dictionary<string, List<int[][]>> Datasets = DatasetManager.ReadJSON(@"..\..\..\dataset.json");
             Convolution ConvolutionLayer = new(new int[,] {
-                {0, 2, 0 },
-                {2, 1, 2 },
-                {0, 2, 0 }
+                {0, 1, 0 },
+                {1, 0, 1 },
+                {0, 1, 0 }
             });
             Dictionary<string, List<int[]>> ConvolutedDatasets = DatasetManager.ProcessDataset(Datasets, Matrix => ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Matrix)));
 
@@ -45,16 +45,36 @@ namespace Lab2
             }
             Neuron Output = new(1);
             Outputs.Add(Output);
-            Network NeuralNetwork = new (Sigmoid.Instance, Inputs, Outputs, 3);
+            Network NeuralNetwork = new (Sigmoid.Instance, Inputs, Outputs, 1);
             //NeuralNetwork.ShowResult = true;
             //NeuralNetwork.Propagate(new List<double>() { Output.Value }, 0.1, 0.1, 1E-18);
-            /*double Epochs = 100;
+            List <KeyValuePair<string, int[]>> CompleteDataset = DatasetManager.DictionaryToList(ConvolutedDatasets);
+            double Epochs = 2500;
+            var Watch = new System.Diagnostics.Stopwatch();
             for (int epoch = 0; epoch < Epochs; epoch++)
             {
-                Console.WriteLine((epoch / Epochs * 100) + "%");
-                foreach (KeyValuePair<string, List<int[]>> DataPair in ConvolutedDatasets)
+                Console.Clear();
+                Console.WriteLine($"Progress: {(epoch / Epochs * 100), 1:0.00}%");
+                Console.WriteLine($"Estimated time waiting: {(Epochs - epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
+                Watch.Restart();
+                DatasetManager.Shuffle(CompleteDataset);
+                foreach(KeyValuePair<string, int[]> DataPair in CompleteDataset)
                 {
                     List<double> ResultList = new() { Double.Parse(DataPair.Key) };
+                    for (int i = 0; i < DataPair.Value.Length; i++)
+                    {
+                        Inputs[0].Value = DataPair.Value[i];
+                    }
+                    //Console.WriteLine("Result: \nArray: ");
+                    //DisplayArray(new int[][] { DataPair.Value });
+                    NeuralNetwork.Propagate(ResultList, 0.1, 0.1, 1E-18);
+                }
+                Watch.Stop();
+                /*foreach (KeyValuePair<string, List<int[]>> DataPair in ConvolutedDatasets)
+                {
+                    List<double> ResultList = new() { Double.Parse(DataPair.Key) };
+
+                    DatasetManager.Shuffle(DataPair.Value);
                     foreach (int[] Data in DataPair.Value)
                     {
                         for (int i = 0; i < Data.Length; i++)
@@ -63,10 +83,9 @@ namespace Lab2
                         }
                         //Console.WriteLine("Result: \nArray: ");
                         //DisplayArray(new int[][] { Data });
-                        DatasetManager.Shuffle(ResultList);
                         NeuralNetwork.Propagate(ResultList, 0.1, 0.1, 1E-18);
                     }
-                }
+                }*/
             }
             Console.WriteLine("LEARNING RESULT: ");
             DatasetManager.Shuffle(Datasets["1"]);
@@ -80,8 +99,8 @@ namespace Lab2
             DatasetManager.Shuffle(Datasets["3"]);
             Console.WriteLine("'3': ");
             DisplayArray(Datasets["3"][0]);
-            Console.WriteLine($"Result: {NeuralNetwork.Calculate(Array.ConvertAll<int, double>(DatasetManager.FlattenArray(ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Datasets["3"][0]))), x => x))[0]}");*/
-
+            Console.WriteLine($"Result: {NeuralNetwork.Calculate(Array.ConvertAll<int, double>(DatasetManager.FlattenArray(ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Datasets["3"][0]))), x => x))[0]}");
+            Console.Read();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

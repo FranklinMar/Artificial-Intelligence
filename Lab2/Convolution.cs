@@ -17,7 +17,7 @@ namespace Lab2
             {
                 for (int j = 0; j < Filter.GetLength(1); j++)
                 {
-                    Filter[i, j] = Generator.Next(0, 1);
+                    Filter[i, j] = Generator.Next(0, 3);
                 }
             }
         }
