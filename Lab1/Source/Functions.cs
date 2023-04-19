@@ -28,6 +28,19 @@ namespace Lab1
         public double CalculateDerivative(double x);
     }
 
+    public class RectifiedActivationFuncion : Singleton<RectifiedActivationFuncion>, IFunction
+    {
+        public double Calculate (double x)
+        {
+            return x > 0 ? x : 0;
+        }
+
+        public double CalculateDerivative(double x)
+        {
+            return 1;
+        }
+    }
+
     public class Sigmoid : Singleton<Sigmoid>, IFunction
     {
         public double Calculate(double x)

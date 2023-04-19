@@ -12,14 +12,47 @@ namespace Lab1
         // For propagation option 2
         public double Delta { get; set; }
 
+        /*public List<Synapse> Inputs { get; private set; } = null;
+        public List<Synapse> Outputs { get; private set; } = null;*/
+
         public Dictionary<Neuron, double> PreviousWeights { get; private set; } = null;
         public Dictionary<Neuron, double> DeltaWeights { get; set; } = null;
         //private List<Neuron> PreviousLayer { get; set; }
 
-        public Neuron(double value = 0)
+        public Neuron(double value = 0) => Value = value;
+
+        /*public void AddInput(Synapse Synapse) => Inputs.Add(Synapse);
+
+        public void AddOutput(Synapse Synapse) => Outputs.Add(Synapse);
+
+        public void AddInput(Neuron Neuron, double? Weight = null)
         {
-            Value = value;
+            Synapse Synapse;
+            if (Weight == null) {
+                Synapse = new(Neuron, this);
+            }
+            else
+            {
+                Synapse = new(Neuron, this, (double) Weight);
+            }
+            Inputs.Add(Synapse);
+            Neuron.Outputs.Add(Synapse);
         }
+
+        public void AddOutput(Neuron Neuron, double? Weight = null)
+        {
+            Synapse Synapse;
+            if (Weight == null)
+            {
+                Synapse = new(Neuron, this);
+            }
+            else
+            {
+                Synapse = new(Neuron, this, (double)Weight);
+            }
+            Inputs.Add(Synapse);
+            Neuron.Outputs.Add(Synapse);
+        }*/
 
         public void RandomizeWeights(List<Neuron> previousLayer/*, double? Value = null, double? Const = null*/)
         {
@@ -75,6 +108,10 @@ namespace Lab1
             }
             //PreviousLayer = previousLayer;
         }
+
+        /*public void ClearInput() => Inputs.Clear();
+        public void ClearOutput() => Outputs.Clear();*/
+
         public void NullifyWeights()
         {
             PreviousWeights = null;
@@ -88,14 +125,20 @@ namespace Lab1
             {
                 throw new InvalidOperationException("No previous layer of neurons found");
             }*/
+
             if (PreviousWeights == null)
             {
                 throw new InvalidOperationException("No weights of neuron connection found");
             }
             Value = 0;
+            /*foreach (Synapse Synapse in Inputs)
+            {
+                Value += Synapse.Output;
+            }*/
             foreach (KeyValuePair<Neuron, double> pair in PreviousWeights)
             {
                 Value += (Function == null ? pair.Key.Value : Function.Calculate(pair.Key.Value)) * pair.Value;
+                DeltaWeights[pair.Key] = 0;
             }
             return Value;
         }

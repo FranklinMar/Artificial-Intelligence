@@ -75,7 +75,7 @@ namespace Lab1
             {
                 throw new InvalidOperationException("Number of networks layers must be bigger than zero");
             }
-            if (!Enumerable.All<List<Neuron>>(network, list => list.Count > 0))
+            if (!Enumerable.All(network, list => list.Count > 0))
             {
                 throw new InvalidOperationException("Number of neurons in a layer must be bigger than zero");
             }
