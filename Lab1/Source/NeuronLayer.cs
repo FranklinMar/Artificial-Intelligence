@@ -33,20 +33,20 @@ namespace Lab1
             Index = index;
         }
 
-        public void ConnectPrevious(NeuronLayer PreviousLayer/*, bool InputLayer = false*/)
+        public void ConnectPrevious(NeuronLayer PreviousLayer, double? Weight = null/*, bool InputLayer = false*/)
         {
             Previous = PreviousLayer;
             PreviousLayer.Next = this;
-            PreviousLayer.Neurons.ForEach(PreviousNeuron => Neurons.ForEach(Neuron => PreviousNeuron.AddOutput(Neuron/*, InputLayer ? 1 : null*/)));
+            PreviousLayer.Neurons.ForEach(PreviousNeuron => Neurons.ForEach(Neuron => PreviousNeuron.AddOutput(Neuron, Weight/*, InputLayer ? 1 : null*/)));
             /*PreviousLayer.Last = Last;
             PreviousLayer.First = First;*/
         }
 
-        public void ConnectNext(NeuronLayer NextLayer/*, bool InputLayer = false*/)
+        public void ConnectNext(NeuronLayer NextLayer, double? Weight = null/*, bool InputLayer = false*/)
         {
             Next = NextLayer;
             NextLayer.Previous = this;
-            NextLayer.Neurons.ForEach(NextNeuron => Neurons.ForEach(Neuron => NextNeuron.AddInput(Neuron/*, InputLayer ? 1 : null*/)));
+            NextLayer.Neurons.ForEach(NextNeuron => Neurons.ForEach(Neuron => NextNeuron.AddInput(Neuron, Weight/*, InputLayer ? 1 : null*/)));
             /*PreviousLayer.Last = Last;
             PreviousLayer.First = First;*/
         }
