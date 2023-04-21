@@ -15,6 +15,7 @@ namespace Lab2
         static void Main(string[] args)
         {
             AllocConsole();
+            string LINE = new('-', 25);
             Dictionary<string, List<int[][]>> Datasets = DatasetManager.ReadJSON(@"..\..\..\dataset.json");
             Convolution ConvolutionLayer = new(new int[,] {
                 {1, 0, 1 },
@@ -22,40 +23,38 @@ namespace Lab2
                 {1, 0, 1 }
             });
             Dictionary<string, List<int[]>> ConvolutedDatasets = DatasetManager.ProcessDataset(Datasets, Matrix => ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Matrix)));
-
-            int[][] Dataset = Datasets["1"][0];
-            //DisplayArray(Dataset);
-            //Console.WriteLine();
-            Dataset = ConvolutionLayer.Convolute(Dataset);
-            //Dataset = Layer.Convolute(Dataset);
-
-            //DisplayArray(Dataset);
-            //Console.WriteLine();
-            Dataset = ConvolutionLayer.MaxPool(Dataset);
-            //DisplayArray(Dataset);
-            
-            List <Neuron> Inputs = new();
-            List <Neuron> Outputs = new();
+            int[][] Dataset;
+            for (int i = 1; i < 4; i++) {
+                DatasetManager.Shuffle(Datasets[$"{i}"]);
+                Dataset = Datasets[$"{i}"][0];
+                Console.WriteLine($"\n{LINE}\n\t{i}:\n{LINE}\n");
+                DisplayArray(Dataset);
+                Console.WriteLine();
+                Dataset = ConvolutionLayer.Convolute(Dataset);
+                DisplayArray(Dataset);
+                Console.WriteLine();
+                Dataset = ConvolutionLayer.MaxPool(Dataset);
+                DisplayArray(Dataset);
+            }
+            Console.Read();
+            Dataset = Datasets[$"1"][0];
+            Dataset = ConvolutionLayer.MaxPool(ConvolutionLayer.Convolute(Dataset));
+            int Counter = 0;
             for (int i = 0; i < Dataset.Length; i++)
             {
-                for (int j = 0; j < Dataset[i].Length; j++)
-                {
-                    Inputs.Add(new Neuron(Dataset[i][j]));
-                }
+                Counter += Dataset[i].Length;
             }
-            Neuron Output = new(1);
-            Outputs.Add(Output);
-            Network NeuralNetwork = new (Sigmoid.Instance, Inputs, Outputs, 1);
+            Network NeuralNetwork = new (Sigmoid.Instance, new int[] { Counter, 3, 3, 1 });
             //NeuralNetwork.ShowResult = true;
             //NeuralNetwork.Propagate(new List<double>() { Output.Value }, 0.1, 0.1, 1E-18);
             List <KeyValuePair<string, int[]>> CompleteDataset = DatasetManager.DictionaryToList(ConvolutedDatasets);
-            double Epochs = 2500;
+            double Epochs = 100000;
             var Watch = new System.Diagnostics.Stopwatch();
-            for (int epoch = 0; epoch < Epochs; epoch++)
+            for (int Epoch = 0; Epoch < Epochs; Epoch++)
             {
                 Console.Clear();
-                Console.WriteLine($"Progress: {(epoch / Epochs * 100), 1:0.00}%");
-                Console.WriteLine($"Estimated time waiting: {(Epochs - epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
+                Console.WriteLine($"Epochs Total: {Epochs}\nEpoch: {Epoch}\nProgress: {(Epoch / (double)Epochs * 100.0), 1:0.00}%");
+                Console.WriteLine($"Estimated time waiting: {(Epochs - Epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
                 Watch.Restart();
                 DatasetManager.Shuffle(CompleteDataset);
                 foreach(KeyValuePair<string, int[]> DataPair in CompleteDataset)
@@ -63,11 +62,11 @@ namespace Lab2
                     List<double> ResultList = new() { Double.Parse(DataPair.Key) };
                     for (int i = 0; i < DataPair.Value.Length; i++)
                     {
-                        Inputs[0].Value = DataPair.Value[i];
+                        NeuralNetwork.Input[0].Value = DataPair.Value[i];
                     }
                     //Console.WriteLine("Result: \nArray: ");
                     //DisplayArray(new int[][] { DataPair.Value });
-                    NeuralNetwork.Propagate(ResultList, 0.1, 0.1, 1E-18);
+                    NeuralNetwork.Propagate(ResultList, 0.1, 0.1, 1E-16);
                 }
                 Watch.Stop();
                 /*foreach (KeyValuePair<string, List<int[]>> DataPair in ConvolutedDatasets)
