@@ -78,8 +78,10 @@ namespace Lab1
             
             double [] LearnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 4.14, 0.07, 4.77, 1.95, 4.18, 0.04, 5.05, 1.40};
             int Epochs = 100000;
+            var Watch = new System.Diagnostics.Stopwatch();
             for (int Epoch = 0; Epoch < Epochs; Epoch++)
             {
+                Watch.Restart();
                 for (int i = 0; i < LearnData.Length - NeuralNetwork.Input.Count - Results.Count; i++)
                 {
                     for (int j = 0; j < NeuralNetwork.Input.Count; j++)
@@ -92,10 +94,12 @@ namespace Lab1
                     }
                     NeuralNetwork.Propagate(Results, 0.1, 0.1, 1E-12);
                 }
+                Watch.Stop();
                 if ((Epoch / (double) Epochs * 1000.0) % 1 == 0)
                 {
                     Console.Clear();
                     Console.WriteLine($"Epochs Total: {Epochs}\nEpoch: {Epoch}\nProgress: {(Epoch / (double)Epochs * 100.0),2:0.0}%");
+                    Console.WriteLine($"Estimated time waiting: {(Epochs - Epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
                 }
             }
             Console.Clear();

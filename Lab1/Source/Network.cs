@@ -149,7 +149,7 @@ namespace Lab1
             NeuronLayer Temp;
             Neuron Neuron;
             double Error;
-            double Y;
+            //double Y;
             double Delta_Wjk;
 
             for (int i = 0; i < Output.Count; i++)
@@ -244,7 +244,7 @@ namespace Lab1
                     for (int j = 0; j < Temp.Count; j++)
                     {
                         Neuron = Temp[j];
-                        Y = (Temp == Input) ? Neuron.Value : Function.Calculate(Neuron.Value);
+                        //Y = (Temp == Input) ? Neuron.Value : Function.Calculate(Neuron.Value);
 
                         if (Debug)
                         {
