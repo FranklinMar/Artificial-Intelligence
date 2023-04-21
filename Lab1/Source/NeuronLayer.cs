@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab1
 {
     public class NeuronLayer
     {
         public List<Neuron> Neurons { get; protected set; }
-        /*public NeuronLayer First;
-        public NeuronLayer Last;*/
         public NeuronLayer Previous;
         public NeuronLayer Next;
 
@@ -33,22 +28,18 @@ namespace Lab1
             Index = index;
         }
 
-        public void ConnectPrevious(NeuronLayer PreviousLayer, double? Weight = null/*, bool InputLayer = false*/)
+        public void ConnectPrevious(NeuronLayer PreviousLayer, double? Weight = null)
         {
             Previous = PreviousLayer;
             PreviousLayer.Next = this;
-            PreviousLayer.Neurons.ForEach(PreviousNeuron => Neurons.ForEach(Neuron => PreviousNeuron.AddOutput(Neuron, Weight/*, InputLayer ? 1 : null*/)));
-            /*PreviousLayer.Last = Last;
-            PreviousLayer.First = First;*/
+            PreviousLayer.Neurons.ForEach(PreviousNeuron => Neurons.ForEach(Neuron => PreviousNeuron.AddOutput(Neuron, Weight)));
         }
 
-        public void ConnectNext(NeuronLayer NextLayer, double? Weight = null/*, bool InputLayer = false*/)
+        public void ConnectNext(NeuronLayer NextLayer, double? Weight = null)
         {
             Next = NextLayer;
             NextLayer.Previous = this;
-            NextLayer.Neurons.ForEach(NextNeuron => Neurons.ForEach(Neuron => NextNeuron.AddInput(Neuron, Weight/*, InputLayer ? 1 : null*/)));
-            /*PreviousLayer.Last = Last;
-            PreviousLayer.First = First;*/
+            NextLayer.Neurons.ForEach(NextNeuron => Neurons.ForEach(Neuron => NextNeuron.AddInput(Neuron, Weight)));
         }
 
         public void ForEach(Action<Neuron> action) => Neurons.ForEach(action);
