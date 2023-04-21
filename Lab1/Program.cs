@@ -8,7 +8,7 @@ namespace Lab1
         static void Main(string[] args)
         {
             string Line = new ('-', 18);
-            LinkedList<List<Neuron>> list = new();
+            /*LinkedList<List<Neuron>> list = new();
 
             // AND Network
             List<Neuron> neurons = new() { new Neuron(), new Neuron() };
@@ -88,20 +88,29 @@ namespace Lab1
             Line = new string('=', 18);
             Console.WriteLine($"\n{Line}\n\tPAUSE\n{Line}");
             Console.ReadKey();
-            Console.Clear();
+            Console.Clear();*/
 
             // Back Propagation - Network 3 + 3 + 1
             //neurons = new() { new Neuron(0), new Neuron(0), new Neuron(0) };
             //neurons = new() { new Neuron(10), new Neuron(5), new Neuron(2) };
-            neurons = new() { new Neuron(1.59), new Neuron(5.73), new Neuron(0.48) };
+            /*neurons = new() { new Neuron(1.59), new Neuron(5.73), new Neuron(0.48) };
             //Neuron result = new(1);
-            Neuron result = new(5.28);
+            Neuron result = new(5.28);*/
             List<double> Results = new ();
-            Results.Add(5.28);
-            List<Neuron> ResultLayer = new() { result };
-            Network network = new(Sigmoid.Instance, neurons, ResultLayer, 3);
+            //Results.Add(5.28);
+            //List<Neuron> ResultLayer = new() { result };
+            Network network = new(Sigmoid.Instance, new int[] { 3, 3, 1 });
+            network.Input[0].Value = 2.56;
+            network.Input[1].Value = 4.20;
+            network.Input[2].Value = 1.60;
+            Results.Add(4.29);
+            /*network.ShowResult = true;
+            Console.WriteLine(network.Calculate()[0]);
+
+            network.Input[1].Value = 1;
+            Console.WriteLine(network.Calculate()[0]);*/
+            //network.Propagate(Results, 0.1, 0.1, 1E-12);
             //network.Print();
-            //network.ShowResult = true;
             //network.Debug = true;
             //network.Propagate(new List<double> { 1 }, 1, 1E-12);
             //network.Propagate(new List<double> { 4 }, 1, 1E-12);
@@ -161,43 +170,47 @@ namespace Lab1
             Console.WriteLine($"{Line}\n\tSigmoid Logic operator");
             network.Calculate();
             Console.WriteLine($"{Line}\nFinal Result: {result.Value}\n");*/
-            double [] learnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 4.14, 4.77, 1.95, 4.18, 5.05, 1.40};
-            int Num = 1000;
-            for (int k = 0; k < 100; k++) 
+            double [] learnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 4.14, 0.07, 4.77, 1.95, 4.18, 0.04, 5.05, 1.40};
+            int Num = 100000;
+            for (int k = 0; k < Num; k++)
             {
-                for (int i = 0; i < learnData.Length - neurons.Count - Results.Count; i++)
+                for (int i = 0; i < learnData.Length - network.Input.Count - Results.Count; i++)
                 {
-                    for (int j = 0; j < neurons.Count; j++)
+                    for (int j = 0; j < network.Input.Count; j++)
                     {
-                        neurons[j].Value = learnData[i + j];
+                        network.Input[j].Value = learnData[i + j];
                     }
                     for (int j = 0; j < Results.Count; j++)
                     {
-                        Results[j] = learnData[i + neurons.Count + j];
+                        Results[j] = learnData[i + network.Input.Count + j];
                     }
                     network.Propagate(Results, 0.1, 0.1, 1E-12);
                 }
-                Console.WriteLine((k / (double)Num * 100.0) + "%");
+                if ((k / (double) Num * 1000.0) % 1 == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Progress: {(k / (double)Num * 100.0),2:00.0}%");
+                }
             }
             Console.Clear();
-            for (int i = 0; i < learnData.Length - neurons.Count - Results.Count; i++)
+            for (int i = 0; i < learnData.Length - network.Input.Count - Results.Count; i++)
             {
-                for (int j = 0; j < neurons.Count; j++)
-                {
-                    Console.Write($"X {(neurons.Count != 1 ? j.ToString() : "")} = {learnData[i + j]} |");
-                    neurons[j].Value = learnData[i + j];
-                }
                 Console.WriteLine();
+                for (int j = 0; j < network.Input.Count; j++)
+                {
+                    Console.Write($"X {(network.Input.Count != 1 ? j.ToString() : "")} = {learnData[i + j]} |");
+                    network.Input[j].Value = learnData[i + j];
+                }
                 network.Calculate();
                 Console.WriteLine("\nExpected result");
                 for (int j = 0; j < Results.Count; j++)
                 {
-                    Console.Write($"y {(Results.Count != 1 ? j.ToString() : "")} = {learnData[i + neurons.Count + j]} |");
+                    Console.Write($"y {(Results.Count != 1 ? j.ToString() : "")} = {learnData[i + network.Input.Count + j]} |");
                 }
                 Console.WriteLine("\nActual result");
-                for (int j = 0; j < ResultLayer.Count; j++)
+                for (int j = 0; j < network.Output.Count; j++)
                 {
-                    Console.Write($"Y {(ResultLayer.Count != 1 ? j.ToString() : "")} = {ResultLayer[j].Value} |");
+                    Console.Write($"Y {(network.Output.Count != 1 ? j.ToString() : "")} = {network.Output[j].Value} |");
                 }
                 Console.WriteLine();
             }

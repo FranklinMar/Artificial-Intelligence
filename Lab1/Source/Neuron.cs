@@ -12,18 +12,21 @@ namespace Lab1
         // For propagation option 2
         public double Delta { get; set; }
 
-        /*public List<Synapse> Inputs { get; private set; } = null;
-        public List<Synapse> Outputs { get; private set; } = null;*/
+        public List<Synapse> Inputs { get; private set; } = new();
+        public List<Synapse> Outputs { get; private set; } = new();
 
+        [Obsolete("Deprecated")]
         public Dictionary<Neuron, double> PreviousWeights { get; private set; } = null;
+
+        [Obsolete("Deprecated")]
         public Dictionary<Neuron, double> DeltaWeights { get; set; } = null;
         //private List<Neuron> PreviousLayer { get; set; }
 
-        public Neuron(double value = 0) => Value = value;
+        public Neuron(/*double value = 0*/) { }// => Value = value;
 
-        /*public void AddInput(Synapse Synapse) => Inputs.Add(Synapse);
+        //public void AddInput(Synapse Synapse) => Inputs.Add(Synapse);
 
-        public void AddOutput(Synapse Synapse) => Outputs.Add(Synapse);
+        //public void AddOutput(ISynapse Synapse) => Outputs.Add(Synapse);
 
         public void AddInput(Neuron Neuron, double? Weight = null)
         {
@@ -44,16 +47,17 @@ namespace Lab1
             Synapse Synapse;
             if (Weight == null)
             {
-                Synapse = new(Neuron, this);
+                Synapse = new(this, Neuron);
             }
             else
             {
-                Synapse = new(Neuron, this, (double)Weight);
+                Synapse = new(this, Neuron, (double)Weight);
             }
-            Inputs.Add(Synapse);
-            Neuron.Outputs.Add(Synapse);
-        }*/
+            Outputs.Add(Synapse);
+            Neuron.Inputs.Add(Synapse);
+        }
 
+        [Obsolete("Deprecated")]
         public void RandomizeWeights(List<Neuron> previousLayer/*, double? Value = null, double? Const = null*/)
         {
             SecureRandom generator = new();
@@ -93,6 +97,14 @@ namespace Lab1
             //PreviousLayer = previousLayer;
         }
 
+        public double CalculateValue(IFunction Function)
+        {
+            Value = 0;
+            Inputs.ForEach(Synapse => Value += Synapse.Output(Function));
+            return Value;
+        }
+
+        [Obsolete("Deprecated")]
         public void SetWeights(List<Neuron> previousLayer, List<double> weights)
         {
             if (previousLayer.Count != weights.Count)
@@ -112,6 +124,7 @@ namespace Lab1
         /*public void ClearInput() => Inputs.Clear();
         public void ClearOutput() => Outputs.Clear();*/
 
+        [Obsolete("Deprecated")]
         public void NullifyWeights()
         {
             PreviousWeights = null;
@@ -119,6 +132,7 @@ namespace Lab1
             //PreviousLayer = null;
         }
 
+        [Obsolete("Deprecated")]
         public double WeightSum(IFunction Function)
         {
             /*if (PreviousLayer == null)

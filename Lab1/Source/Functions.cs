@@ -50,7 +50,9 @@ namespace Lab1
 
         public double CalculateDerivative(double x)
         {
-            return Math.Exp(-x) / Math.Pow((Math.Exp(-x) + 1), 2);
+            double Temp = Calculate(x);
+            return Temp * (1 - Temp);
+            //return Math.Exp(-x) / Math.Pow((Math.Exp(-x) + 1), 2);
         }
     }
     
