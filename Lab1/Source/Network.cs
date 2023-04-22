@@ -6,7 +6,7 @@ namespace Lab1
 {
     public class Network
     {
-        private static string LINE = new('-', 14);
+        private static readonly string LINE = new('-', 14);
         public NeuronLayer Output { get; private set; } = null;
         public NeuronLayer Input { get; private set; }
 

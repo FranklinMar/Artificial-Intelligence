@@ -24,7 +24,7 @@ namespace Lab1
         {
             if (minValue > maxValue)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(minValue));
             }
             return (int)Math.Floor((minValue + ((double)maxValue - minValue) * NextDouble()));
         }
@@ -36,11 +36,11 @@ namespace Lab1
             var randUint = BitConverter.ToUInt32(data, 0);
             return randUint / (uint.MaxValue + 1.0);
         }
-        public double NextDouble(double minValue, int maxValue)
+        public double NextDouble(double minValue, double maxValue)
         {
             if (minValue > maxValue)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(minValue));
             }
             return NextDouble() * (maxValue - minValue) + minValue;
         }
