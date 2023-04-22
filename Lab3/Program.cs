@@ -24,6 +24,11 @@ namespace Lab3
             Console.WriteLine($"{Num} = {Genome<int>.BytesToString(genome.BytesOfVariable)}");
             genome = new(genome.BytesOfVariable);
             Console.WriteLine($"{Num} = {Genome<int>.BytesToString(genome.BytesOfVariable)}");
+            Num = 4;
+            genome = new(Num);
+            //Genome<int>.InverseByte(ref genome.BytesOfVariable[0], 2);
+            genome.InverseByte(2);
+            Console.WriteLine($"{genome.Variable} = {Genome<int>.BytesToString(genome.BytesOfVariable)}");
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();

@@ -11,10 +11,13 @@ using Lab1;
 namespace Lab3
 {
     //[StructLayout(LayoutKind.Explicit)]
+    //[StructLayout(LayoutKind.Explicit)]
     public class Genome<T> where T : struct
     {
         private static int SIZE = Marshal.SizeOf(typeof(T));
+        private static int BYTE_SIZE = 8;
         private static SecureRandom Generator = new();
+        //[FieldOffset(0)]
         //[FieldOffset(0)]
         private T Value;
         public T Variable
@@ -39,16 +42,17 @@ namespace Lab3
             }
         }
         //[FieldOffset(1)]
+        //[FieldOffset(0)]
         private byte[] Bytes;
         public byte[] BytesOfVariable {
             get
             {
-                return Bytes;
+                return (byte[]) Bytes.Clone();
             }
             set
             {
                 Bytes = value;
-                Value = (T) ConvertToObject(value);
+                Value = ConvertToObject(value);
             }// = new byte[Marshal.SizeOf(typeof(T))];
         }
         public Genome(T Value){
@@ -64,6 +68,17 @@ namespace Lab3
             //Buffer.BlockCopy(Variable, 0, BytesOfVariable, 0, BytesOfVariable.Length);
 
         }
+
+        public void InverseByte(int Index)
+        {
+            if (Index < 0 || Index >= BYTE_SIZE * Bytes.Length)
+            {
+                throw new ArgumentException("Byte size exceeded");
+            }
+            Bytes[Index / BYTE_SIZE] = (byte)(Bytes[Index/BYTE_SIZE] ^ (1 << Index % BYTE_SIZE));
+            Value = (T) ConvertToObject(Bytes);
+        }
+
         public static byte[] ConvertToBytes(object obj)
         {
             var size = Marshal.SizeOf(typeof(T));
@@ -76,16 +91,16 @@ namespace Lab3
             Marshal.Copy(ptr, bytes, 0, SIZE);
             // Release unmanaged memory.
             Marshal.FreeHGlobal(ptr);
-            return bytes;
+            return bytes;//.Reverse().ToArray();
         }
 
-        public static object ConvertToObject(byte[] Array)
+        public static T ConvertToObject(byte[] Array)
         {
             var ptr = Marshal.AllocHGlobal(SIZE);
-            Marshal.Copy(Array, 0, ptr, SIZE);
+            Marshal.Copy(Array/*.Reverse().ToArray()*/, 0, ptr, SIZE);
             object obj = Marshal.PtrToStructure(ptr, typeof(T));
             Marshal.FreeHGlobal(ptr);
-            return obj;
+            return (T) obj;
         }
 
         public static string BytesToString(byte[] array)
