@@ -14,7 +14,7 @@ namespace Lab3
     //[StructLayout(LayoutKind.Explicit)]
     public class Genome<T>
     {
-        private static int SIZE = Marshal.SizeOf(typeof(T));
+        private static readonly int SIZE = Marshal.SizeOf(typeof(T));
 
         private T Value;
         public T Variable
@@ -89,7 +89,8 @@ namespace Lab3
             //BitArray New = Other.Genes;
             if (Point < 0 || Point >= _Genes.Count || Point >= Other._Genes.Count)
             {
-                throw new ArgumentException("Point exceeds bounds of genome");
+                //throw new ArgumentException("Point exceeds bounds of genome");
+                throw new ArgumentOutOfRangeException(nameof(Point));
             }
             if (_Genes.Count != Other._Genes.Count)
             {
@@ -113,7 +114,8 @@ namespace Lab3
             Value = ConvertToObject(Bytes);*/
             if (Index < 0 || Index >= _Genes.Count)
             {
-                throw new ArgumentException("Index out of bounds");
+                throw new ArgumentOutOfRangeException(nameof(Index));
+                //throw new ArgumentException("Index out of bounds");
             }
             _Genes[Index] = !_Genes[Index];
             Value = ConvertToObject(_Genes);
@@ -123,7 +125,9 @@ namespace Lab3
         {
             if (Index < 0 || Index >= _Genes.Count)
             {
-                throw new ArgumentException("Index out of bounds");
+                //throw new ArgumentException("Point exceeds bounds of genome");
+                throw new ArgumentOutOfRangeException(nameof(Index));
+                //throw new ArgumentException("Index out of bounds");
             }
             _Genes[Index] = Gene;
             /*if (Index < 0 || Index >= BYTE_SIZE * Bytes.Length)

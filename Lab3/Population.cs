@@ -11,18 +11,46 @@ namespace Lab3
     {
         public List<Genome<T>> Individuals { get; private set; } = new();
 
+        public int Count
+        {
+            get
+            {
+                return Individuals.Count;
+            }
+        }
+
         public Population() { }
+
+        public void Add(Genome<T> genome) => Individuals.Add(genome);
+
+        public void Remove(Genome<T> genome) => Individuals.Remove(genome);
+
+        public void RemoveAt(int Index) => Individuals.RemoveAt(Index);
+
         public Population(List<Genome<T>> genomes) => Individuals = genomes;
 
-        public Population<T> Selection(Func<Genome<T>, double> FitnessFunction, int TopNumber)
+        public Genome<T> this[int i]
         {
-            if (TopNumber < 0 || TopNumber > Individuals.Count)
+            get
             {
-                throw new ArgumentException("Limit number out of bounds");
+                return Individuals[i];
+            }
+            set
+            {
+                Individuals[i] = value;
+            }
+        }
+
+        public Population<T> Selection(Func<Genome<T>, double> FitnessFunction, int LimitNumber)
+        {
+            if (LimitNumber < 0 || LimitNumber > Individuals.Count)
+            {
+                //throw new ArgumentException("Limit number out of bounds");
+                throw new ArgumentOutOfRangeException(nameof(LimitNumber));
             }
             Dictionary<Genome<T>, double> Dict = new();
             Individuals.ForEach(Individual => Dict.Add(Individual, FitnessFunction.Invoke(Individual)));
-            var SortedList = from entry in Dict orderby entry.Value descending select entry.Key;
+            var SortedList = (from entry in Dict orderby entry.Value descending select entry.Key).Take(LimitNumber);
             return new(new (SortedList));
         }
 
