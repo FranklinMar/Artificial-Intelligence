@@ -36,6 +36,14 @@ namespace Lab1
             var randUint = BitConverter.ToUInt32(data, 0);
             return randUint / (uint.MaxValue + 1.0);
         }
+        public double NextDouble(double minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            return NextDouble() * (maxValue - minValue) + minValue;
+        }
 
         public override void GetBytes(byte[] data)
         {

@@ -19,16 +19,19 @@ namespace Lab3
         static void Main()
         {
             AllocConsole();
-            int Num = 257;
-            Genome<int> genome = new(Num);
-            Console.WriteLine($"{Num} = {Genome<int>.BytesToString(genome.BytesOfVariable)}");
-            genome = new(genome.BytesOfVariable);
-            Console.WriteLine($"{Num} = {Genome<int>.BytesToString(genome.BytesOfVariable)}");
+            double Num = 257;
+            Genome<double> Genome = new(Num);
+            Console.WriteLine($"{Genome.Variable} = {Genome.GenesToString()}");
+            Genome = new(Genome.Genes);
+            Console.WriteLine($"{Genome.Variable} = {Genome.GenesToString()}");
+            Genome.InverseGene(8);
+            Console.WriteLine($"{Genome.Variable} = {Genome.GenesToString()}");
             Num = 4;
-            genome = new(Num);
-            //Genome<int>.InverseByte(ref genome.BytesOfVariable[0], 2);
-            genome.InverseByte(2);
-            Console.WriteLine($"{genome.Variable} = {Genome<int>.BytesToString(genome.BytesOfVariable)}");
+            Genome = new(Num);
+            Genome.InverseGene(2);
+            Console.WriteLine($"{Genome.Variable} = {Genome.GenesToString()}");
+
+
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
