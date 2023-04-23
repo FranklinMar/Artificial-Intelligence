@@ -32,9 +32,6 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.min.map"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js" integrity="sha512-VW8/i4IZkHxdD8OlqNdF7fGn3ba0+lYqag+Uy4cG6BtJ/LIr8t23s/vls70pQ41UasHH0tL57GQfKDApqc9izA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js" integrity="sha512-DmQnZdEjFh4R/040JxDSg3j9cS8D0oC5u2noG9Az18F11leiDFwrTOkm9PP+jdBMiH66QBa73O+54kZr5FyU7w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
@@ -91,8 +88,6 @@
                 yAxisID: 'y',
                 data: [],
                 function: function (x) {
-                    //console.log(Function.replaceAll("x", `(${x})`));
-                    //console.log(eval(Function.replaceAll("x", `(${x})`)));
                     return eval(Function.replaceAll("sin", "Math.sin").replaceAll("x", `(${x})`));
                 }
             }];
@@ -150,7 +145,6 @@
 </head>
 <body>
     <div class="report-card">
-        <!--<p class="text-center p-t-20 text-muted"></p>-->
         <canvas id="chart"></canvas>
     </div>
     <table class="table table-bordered table-hover table-condensed table-responsive">
@@ -170,7 +164,6 @@
         let Values;
         let Xmax;
         let Xmin;
-        //document.querySelector("div.report-card p.text-center").innerText = Function;
         Function = Function.replaceAll("^", "**");
         Function = Function.replaceAll(/ ((\+|\-)\s*0\.0+)/gm, '');
 
@@ -181,7 +174,7 @@
         chart.data.datasets[0].pointRadius = [];
         for (var i = 1; i <= data.labels.length - 1; i++) {
 
-            if (Values.some(number => Number(number.toFixed(2)) === data.labels[i] /*&& data.datasets[0].data[i] === eval(Function.replaceAll("sin", "Math.sin").replaceAll("x", `(${number})`))*//*Math.round((data[i] + Number.EPSILON) * 100) / 100*/)) {
+            if (Values.some(number => Number(number.toFixed(2)) === data.labels[i])) {
                 chart.data.datasets[0].pointRadius[i] = 10;
                 chart.data.datasets[0].pointBackgroundColor[i] = 'red';
             } else {

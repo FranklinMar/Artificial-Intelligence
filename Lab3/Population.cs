@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Lab1;
 
 namespace Lab3
@@ -73,6 +71,5 @@ namespace Lab3
             }
             return new(Generation);
         }
-        //public 
     }
 }

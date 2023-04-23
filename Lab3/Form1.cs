@@ -1,12 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab3
@@ -27,7 +20,6 @@ namespace Lab3
 
         private void webView21_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
-            //webView21.CoreWebView2.Navigate("https://www.google.com");
             webView21.NavigateToString(StringHTML);
         }
 

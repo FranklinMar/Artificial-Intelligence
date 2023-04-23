@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.Json;
 using Lab1;
-using System.Runtime.CompilerServices;
-using System.Reflection;
 
 namespace Lab3
 {
     static class Program
     {
-        //static string File = new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath;
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -25,29 +20,11 @@ namespace Lab3
         static void Main()
         {
             AllocConsole();
-            /*double Num1 = 257;
-            Genome<double> Genome1 = new(Num1);
-            Console.WriteLine($"{Genome1.Variable} = {Genome1.GenesToString()}");
-            Genome1 = new(Genome1.Genes);
-            Console.WriteLine($"{Genome1.Variable} = {Genome1.GenesToString()}");
-            Genome1.InverseGene(8);
-            Console.WriteLine($"{Genome1.Variable} = {Genome1.GenesToString()}");
-            double Num2 = 4;
-            Genome <double> Genome2 = new(Num2);
-            Genome2.InverseGene(2);
-            Console.WriteLine($"{Genome2.Variable} = {Genome2.GenesToString()}");
-            Genome <double> CrossResult = Genome1.Cross(Genome2, Genome1.BitCount / 2);
-            Console.WriteLine($"{CrossResult.Variable} = {CrossResult.GenesToString()}");*/
-            //Console.WriteLine(File);
-
-            /*string ExeFilePath = Assembly.GetEntryAssembly().Location;
-            string WorkPath = Path.GetDirectoryName(ExeFilePath);
-            Console.WriteLine(WorkPath);*/
             double
                 X_min = -2,
                 X_max = 5,
                 InitialPopulationNumber = 25000,
-                GenerationNumber = 1;//000;
+                GenerationNumber = 1;
             MathFunctions Function = new(X_min, X_max);
             Func<Genome<double>, double> 
                 Min = Function.MinSineFunction,
