@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "xxj2Ra3lMUk2n6AFpG6eu83h9j6MqX2ol6E/DzsZ2X6lmCKYJE2wikR4xwsdiNF+CPdP6EHpv8v7nxDD/YPYkw==",
+  "dgSpecHash": "worL2RDAWKquo3pQ1UWJ5t6bTzBZCI1wspLEc4oWiWfCshGTwTIV5ZrRVIXG5MgypeECd5yndat2qdOG1BxpXw==",
   "success": true,
   "projectFilePath": "D:\\Programs\\VS Project\\ArtificialIntelligence\\Lab3\\Lab3.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\1\\.nuget\\packages\\microsoft.web.webview2\\1.0.1722.45\\microsoft.web.webview2.1.0.1722.45.nupkg.sha512"
+  ],
   "logs": []
 }

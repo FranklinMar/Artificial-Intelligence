@@ -8,8 +8,36 @@ namespace Lab3
 {
     class MathFunctions
     {
-        double X_min;
-        double X_max;
+        private double Xmin;
+        private double Xmax;
+        public double X_min { 
+            get 
+            { 
+                return Xmin;
+            }
+            set
+            {
+                if (value >= Xmax)
+                {
+                    throw new ArgumentException("Min cannot be bigger than max");
+                }
+                Xmin = value;
+            }
+        }
+        public double X_max {
+            get
+            {
+                return Xmax;
+            }
+            set
+            {
+                if (value <= Xmin)
+                {
+                    throw new ArgumentException("Min cannot be bigger than max");
+                }
+                Xmax = value;
+            } 
+        }
 
         public MathFunctions(double Min, double Max)
         {

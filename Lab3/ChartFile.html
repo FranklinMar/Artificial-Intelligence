@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <title></title>
+    <style>
+        div {
+            width: 90%;
+            height: 90%;
+            margin: auto;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        table {
+            width: 90%;
+            height: 90%;
+            margin: 0 auto;
+        }
+
+        table * {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.min.map"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js" integrity="sha512-VW8/i4IZkHxdD8OlqNdF7fGn3ba0+lYqag+Uy4cG6BtJ/LIr8t23s/vls70pQ41UasHH0tL57GQfKDApqc9izA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js" integrity="sha512-DmQnZdEjFh4R/040JxDSg3j9cS8D0oC5u2noG9Az18F11leiDFwrTOkm9PP+jdBMiH66QBa73O+54kZr5FyU7w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+
+        Chart.register({
+            id: "Function",
+            beforeInit: function (chart) {
+                // We get the chart data
+                var data = chart.config.data;
+
+                // For every dataset ...
+                for (var i = 0; i < data.datasets.length; i++) {
+
+                    // For every label ...
+                    for (var j = 0; j < data.labels.length; j++) {
+
+                        // We get the dataset's function and calculate the value
+                        var fct = data.datasets[i].function,
+                            x = data.labels[j],
+                            y = fct(x);
+                        // Then we add the value to the dataset data
+                        data.datasets[i].data.push(y);
+                    }
+                }
+            }
+        });
+        function range(start, stop, step) {
+            if (typeof stop == 'undefined') {
+                // one param defined
+                stop = start;
+                start = 0;
+            }
+
+            if (typeof step == 'undefined') {
+                step = 1;
+            }
+
+            if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+                return [];
+            }
+
+            var result = [];
+            for (var i = start; step > 0 ? i < stop : i > stop; i = Math.round((i + step) * 100) / 100) {
+                result.push(i);
+            }
+
+            return result;
+        };
+        function functionChart(Function, X_min, X_max) {
+            let datasets = [{
+                label: `y(x) = ${Function}`,
+                fill: false,
+                xAxisID: 'x',
+                yAxisID: 'y',
+                data: [],
+                function: function (x) {
+                    //console.log(Function.replaceAll("x", `(${x})`));
+                    //console.log(eval(Function.replaceAll("x", `(${x})`)));
+                    return eval(Function.replaceAll("sin", "Math.sin").replaceAll("x", `(${x})`));
+                }
+            }];
+            var config = {
+                type: 'line',
+                data: {
+                    labels: range(X_min, X_max, 0.01),
+                    datasets: datasets,
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            type: 'linear',
+                            title: {
+                                display: true,
+                                text: 'x'
+                            },
+                            ticks: {
+                                callback: function (value, index) {
+                                    return this.getLabelForValue(value);
+                                },
+                                stepSize: 0.5,
+                            }
+                        },
+                        y: {
+                            display: true,
+                            type: 'linear',
+                            suggestedMin: -10,
+                            suggestedMax: 10,
+                            title: {
+                                display: true,
+                                text: 'y(x)'
+                            }
+                        }
+
+                    }
+                }
+            };
+            return config;
+        }
+    </script>
+</head>
+<body>
+    <div class="report-card">
+        <!--<p class="text-center p-t-20 text-muted"></p>-->
+        <canvas id="chart"></canvas>
+    </div>
+    <table class="table table-bordered table-hover table-condensed table-responsive">
+        <thead>
+            <tr id="X">
+                <th class="table-dark" scope="col" rowspan="2">x</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            <tr id="yX">
+                <th class="table-dark" scope="col" rowspan="2">y(x)</th>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        let Function;
+        let Values;
+        let Xmax;
+        let Xmin;
+        //document.querySelector("div.report-card p.text-center").innerText = Function;
+        Function = Function.replaceAll("^", "**");
+        Function = Function.replaceAll(/ ((\+|\-)\s*0\.0+)/gm, '');
+
+        let config = functionChart(Function, Xmin, Xmax);
+        let data = config.data;
+        let chart = new Chart(document.getElementById("chart").getContext("2d"), config);
+        chart.data.datasets[0].pointBackgroundColor = [];
+        chart.data.datasets[0].pointRadius = [];
+        for (var i = 1; i <= data.labels.length - 1; i++) {
+
+            if (Values.some(number => Number(number.toFixed(2)) === data.labels[i] /*&& data.datasets[0].data[i] === eval(Function.replaceAll("sin", "Math.sin").replaceAll("x", `(${number})`))*//*Math.round((data[i] + Number.EPSILON) * 100) / 100*/)) {
+                chart.data.datasets[0].pointRadius[i] = 10;
+                chart.data.datasets[0].pointBackgroundColor[i] = 'red';
+            } else {
+                chart.data.datasets[0].pointRadius[i] = 2;
+            }
+        }
+        chart.update();
+
+        let X = document.querySelector("#X");
+        let yX = document.querySelector("#yX");
+
+        for (let i = 0; i < Values.length; i++) {
+            let td = document.createElement("td");
+            td.innerText = Values[i];
+            X.appendChild(td);
+            td = document.createElement("td");
+            td.setAttribute("col");
+            td.innerText = eval(Function.replaceAll("sin", "Math.sin").replaceAll("x", `(${Values[i]})`));
+            yX.appendChild(td);
+        }
+    </script>
+</body>
+</html>
