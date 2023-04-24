@@ -8,12 +8,11 @@ namespace Lab1
         static void Main(string[] args)
         {
             string Line = new('-', 18);
-            LinkedList<List<Neuron>> list = new();
 
             // AND Network
-            Network NeuralNetwork = new(And.Instance, new int[] { 2, 1 });
+            NeuralNetwork NeuralNetwork = new(And.Instance, new int[] { 2, 1 });
             NeuralNetwork.Output[0].Inputs.ForEach(Synapse => Synapse.Weight = 1);
-            NeuralNetwork.ShowResult = true;
+            NeuralNetwork.SHOW_RESULT = true;
             Console.WriteLine($"{Line}\n\tAND");
             for (int i = 0; i < 2; i++)
             {
@@ -41,7 +40,7 @@ namespace Lab1
             NeuralNetwork.Output.Neurons.ForEach(Neuron => Neuron.Inputs.Clear());
             NeuralNetwork.Input.Neurons.ForEach(Neuron => Neuron.Outputs.Clear());
             NeuralNetwork.Output.ConnectPrevious(NeuralNetwork.Input, -1.5);
-            NeuralNetwork.ShowResult = true;
+            NeuralNetwork.SHOW_RESULT = true;
             Console.WriteLine($"{Line}\n\tNOT");
             NeuralNetwork.Calculate(new double[] { 0 });
             Console.WriteLine($"{Line}\nFinal Result: {Not.Instance.Calculate(NeuralNetwork.Output[0].Value)}\n\n");
@@ -55,7 +54,7 @@ namespace Lab1
             NeuralNetwork.Input[1].Outputs[0].Weight = -1;
             NeuralNetwork.Input[1].Outputs[1].Weight = 1;
             NeuralNetwork.Output[0].Inputs.ForEach(Synapse => Synapse.Weight = 1);
-            NeuralNetwork.ShowResult = true;
+            NeuralNetwork.SHOW_RESULT = true;
             Console.WriteLine($"{Line}\n\tXOR");
             for (int i = 0; i < 2; i++)
             {
@@ -72,11 +71,14 @@ namespace Lab1
             Console.Clear();
 
             // Back Propagation - Network 3 + 3 + 1
-            List<double> Results = new ();
             NeuralNetwork = new(Sigmoid.Instance, new int[] { 3, 3, 1 });
+            NeuralNetwork.SHOW = true;
+            List<double> Results = new();
             Results.Add(4.29);
             
             double [] LearnData = new double[] {2.56, 4.20, 1.60, 4.29, 1.17, 4.40, 4.14, 0.07, 4.77, 1.95, 4.18, 0.04, 5.05, 1.40};
+            /*
+            List<double> Results = new ();
             int Epochs = 100000;
             var Watch = new System.Diagnostics.Stopwatch();
             for (int Epoch = 0; Epoch < Epochs; Epoch++)
@@ -92,7 +94,7 @@ namespace Lab1
                     {
                         Results[j] = LearnData[i + NeuralNetwork.Input.Count + j];
                     }
-                    NeuralNetwork.Propagate(Results, 0.1, 0.1, 1E-12);
+                    NeuralNetwork.BackPropagate(Results, 0.1, 0.1, 1E-12);
                 }
                 Watch.Stop();
                 if ((Epoch / (double) Epochs * 1000.0) % 1 == 0)
@@ -101,8 +103,8 @@ namespace Lab1
                     Console.WriteLine($"Epochs Total: {Epochs}\nEpoch: {Epoch}\nProgress: {(Epoch / (double)Epochs * 100.0),2:0.0}%");
                     Console.WriteLine($"Estimated time waiting: {(Epochs - Epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
                 }
-            }
-            Console.Clear();
+            }*/
+            NeuralNetwork.Learn(LearnData, 100000, 0.1, 0.1);
             for (int i = 0; i < LearnData.Length - NeuralNetwork.Input.Count - Results.Count; i++)
             {
                 Console.WriteLine();

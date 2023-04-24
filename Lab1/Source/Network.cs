@@ -4,18 +4,34 @@ using System.Linq;
 
 namespace Lab1
 {
-    public class Network
+    public class NeuralNetwork
     {
         private static readonly string LINE = new('-', 14);
         public NeuronLayer Output { get; private set; } = null;
         public NeuronLayer Input { get; private set; }
 
         public double GlobalError { get; private set; }
-        public bool Debug = false;
-        public bool ShowResult = false;
+        private double _EPSILON = 1E-12;
+        public double EPSILON {
+            get
+            {
+                return _EPSILON;
+            }
+            set
+            {
+                if (EPSILON < 0)
+                {
+                    throw new ArgumentException("Epsilon cannot be negative");
+                }
+                _EPSILON = value;
+            }
+        }
+        public bool DEBUG = false;
+        public bool SHOW_RESULT = false;
+        public bool SHOW = false;
         public IFunction Function { get; set; }
 
-        public Network(IFunction function, int [] NeuronLayers)
+        public NeuralNetwork(IFunction function, int [] NeuronLayers)
         {
             if (NeuronLayers.Length < 2)
             {
@@ -72,7 +88,7 @@ namespace Lab1
         public double[] Calculate(bool ActivateInput = false)
         {
             NeuronLayer Temp = Input.Next;
-            if (Debug || ShowResult)
+            if (DEBUG || SHOW_RESULT)
             {
                 Console.WriteLine($"{LINE}\nInput values:\n{LINE}");
                 for (int j = 0; j < Input.Count; j++)
@@ -83,7 +99,7 @@ namespace Lab1
             int i = 0;
             do
             {
-                if (Debug)
+                if (DEBUG)
                 {
                     Console.WriteLine($"Layer #{i}");
                 }
@@ -95,7 +111,7 @@ namespace Lab1
                     neuron.CalculateValue(Temp == Input.Next && !ActivateInput ? null : Function);
                     neuron.Delta = 0;
                     //neuron.WeightSum(Temp == Layers.First.Next ? null : Function);
-                    if (Debug)
+                    if (DEBUG)
                     {
                         Console.WriteLine($"\tS#{i}#{j} = {neuron.Value}");
                         Console.WriteLine($"\tY#{i}#{j} = {Function.Calculate(neuron.Value)}");
@@ -112,7 +128,7 @@ namespace Lab1
             return Result;
         }
 
-        public void Propagate(List<double> Result, double LearningSpeed, double Momentum, double Epsilon = 0)
+        public void BackPropagate(List<double> Result, double LearningSpeed, double Momentum, double Epsilon = 0)
         {
             if (LearningSpeed < 0 || LearningSpeed > 1)
             {
@@ -126,7 +142,7 @@ namespace Lab1
             {
                 throw new ArgumentException("Expected results number doesn't match output layer");
             }
-            if (Debug || ShowResult)
+            if (DEBUG || SHOW_RESULT)
             {
                 Console.WriteLine($"Learning Speed: {LearningSpeed}");
                 Console.WriteLine($"Momentum: {Momentum}");
@@ -159,7 +175,7 @@ namespace Lab1
             }
             while (GlobalError > Epsilon)
             {
-                if (Debug || ShowResult)
+                if (DEBUG || SHOW_RESULT)
                 {
                     Console.WriteLine($"Iteration #{Counter}");
                 }
@@ -237,7 +253,7 @@ namespace Lab1
                 Temp = Output;
                 do
                 {
-                    if (Debug)
+                    if (DEBUG)
                     {
                         Console.WriteLine($"\n  Layer #{Temp.Index}");
                     }
@@ -246,7 +262,7 @@ namespace Lab1
                         Neuron = Temp[j];
                         //Y = (Temp == Input) ? Neuron.Value : Function.Calculate(Neuron.Value);
 
-                        if (Debug)
+                        if (DEBUG)
                         {
                             Console.WriteLine($"\tS#{j} = {Neuron.Value}");
                             Console.WriteLine($"\tY#{j} = {Function.Calculate(Neuron.Value)}");
@@ -265,21 +281,21 @@ namespace Lab1
                             }
                             Neuron.Delta = Function.CalculateDerivative(Neuron.Value) * Sum;
                         }
-                        if (Debug)
+                        if (DEBUG)
                         {
                             Console.WriteLine($"\tDELTA #{j} = {Neuron.Delta}\n");
                         }
                         for (int k = 0; k < Neuron.Outputs.Count; k++) {
                             Synapse synapse = Neuron.Outputs[k];
                             Delta_Wjk = -LearningSpeed * Neuron.Value * synapse.ToNeuron.Delta;
-                            if (Debug)
+                            if (DEBUG)
                             {
                                 Console.WriteLine($"\tW#{j}#{k} = {synapse.Weight}");
                                 Console.WriteLine($"\tDELTA W#{j}#{k} = {Delta_Wjk}");
                             }
                             synapse.Weight += Delta_Wjk + Momentum * synapse.Delta;
                             synapse.Delta = Delta_Wjk;
-                            if (Debug) {
+                            if (DEBUG) {
                                 Console.WriteLine($"\tNEW W#{j}#{k} = {synapse.Weight}\n");
                             }
                         }
@@ -287,7 +303,7 @@ namespace Lab1
                     Temp = Temp.Previous;
                 } while (Temp != null);
 
-                if (Debug || ShowResult)
+                if (DEBUG || SHOW_RESULT)
                 {
                     Console.WriteLine($"\nGlobal Error: {GlobalError}\nResults:");
                     for (int i = 0; i < Result.Count; i++)
@@ -310,9 +326,104 @@ namespace Lab1
                     throw new Exception("No Solution Found!");
                 }*/
             }
-            if (Debug || ShowResult)
+            if (DEBUG || SHOW_RESULT)
             {
                 Console.WriteLine("Completed!");
+            }
+        }
+
+        public void Learn(double[] LearnData, int Epochs, double LearningSpeed, double Momentum)
+        {
+            if (LearningSpeed <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(LearningSpeed));
+            }
+            if (Momentum <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(LearningSpeed));
+            }
+            var Watch = new System.Diagnostics.Stopwatch();
+            List<double> Results = new();
+            for (int i = 0; i < Output.Count; i++)
+            {
+                Results.Add(i);
+            }
+            for (int Epoch = 0; Epoch < Epochs; Epoch++)
+            {
+                Watch.Restart();
+                for (int i = 0; i < LearnData.Length - Input.Count - Results.Count; i++)
+                {
+                    for (int j = 0; j < Input.Count; j++)
+                    {
+                        Input[j].Value = LearnData[i + j];
+                    }
+                    for (int j = 0; j < Results.Count; j++)
+                    {
+                        Results[j] = LearnData[i + Input.Count + j];
+                    }
+                    BackPropagate(Results, LearningSpeed, Momentum, _EPSILON);
+                }
+                Watch.Stop();
+                if ((Epoch / (double)Epochs * 1000.0) % 1 == 0 && SHOW)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Epochs Total: {Epochs}\nEpoch: {Epoch}\nProgress: {(Epoch / (double)Epochs * 100.0),2:0.0}%");
+                    Console.WriteLine($"Estimated time waiting: {(Epochs - Epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
+                }
+            }
+            if (SHOW)
+            {
+                Console.Clear();
+            }
+        }
+
+        public void Learn(Dictionary<double[], double[]> LearnData, int Epochs, double LearningSpeed, double Momentum)
+        {
+            if (Enumerable.Any(LearnData.ToList(), Pair => Pair.Key.Length != Input.Count || Pair.Value.Length != Output.Count))
+            {
+                throw new ArgumentException("Inputs and outputs doesn't match");
+            }
+            if (LearningSpeed <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(LearningSpeed));
+            }
+            if (Momentum <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(LearningSpeed));
+            }
+            var Watch = new System.Diagnostics.Stopwatch();
+            List<double> Results = new();
+            List<KeyValuePair<double[], double[]>> Data = LearnData.ToList();
+            for (int i = 0; i < Output.Count; i++)
+            {
+                Results.Add(i);
+            }
+            for (int Epoch = 0; Epoch < Epochs; Epoch++)
+            {
+                Watch.Restart();
+                for (int i = 0; i < Data.Count; i++)
+                {
+                    for (int j = 0; j < Input.Count; j++)
+                    {
+                        Input[j].Value = Data[i].Value[j];
+                    }
+                    for (int j = 0; j < Results.Count; j++)
+                    {
+                        Results[j] = Data[i].Key[j];
+                    }
+                    BackPropagate(Results, LearningSpeed, Momentum, _EPSILON);
+                }
+                Watch.Stop();
+                if ((Epoch / (double)Epochs * 1000.0) % 1 == 0 && SHOW)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Epochs Total: {Epochs}\nEpoch: {Epoch}\nProgress: {(Epoch / (double)Epochs * 100.0),2:0.0}%");
+                    Console.WriteLine($"Estimated time waiting: {(Epochs - Epoch) * Watch.ElapsedMilliseconds / 1000.0 }s");
+                }
+            }
+            if (SHOW)
+            {
+                Console.Clear();
             }
         }
     }
